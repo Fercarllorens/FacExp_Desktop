@@ -18,8 +18,17 @@
     </style>
 </head>
 <body>
-    <h1>FacExp</h1>
+    <div>
+        <h1>FacExp</h1>
+    </div>
+    <div>
+        <img id="stream" src="../../Backend/Image/StreamRead.png">
+    </div>
     <div id="container"></div>
+    <div>
+        <button class="btn btn-primary" id="start" onclick="startRecord()">START</button>
+        <button class="btn btn-danger" id="stop" onclick="stopRecord()" >STOP</button>
+    </div>
     <script src="../Scripts/ChartScript.js"></script>
 </body>
 </html>

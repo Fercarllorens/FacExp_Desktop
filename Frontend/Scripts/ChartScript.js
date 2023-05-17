@@ -1,4 +1,7 @@
+var tokenRecord;
+
 function start() {
+  document.getElementById('stream').src="../../Backend/Image/StreamRead.png"  + "?" + Date.now()
     fetch('http://localhost:5000/result', {
         method:'GET',
         headers:{
@@ -8,14 +11,12 @@ function start() {
     .then(resp => resp.json())
     .then((data) => plotChart(data))
     .catch(error => console.log(error));
-}
+  }
 
-
-function plotChart (data) {
+async function plotChart (data) {
 
     document.getElementById('container').innerHTML = "";
     
-    console.log(data);
     // our data from bulbapedia
    var data1 = [
      {x: "neutral", value: parseFloat(data.neutral)},
@@ -75,5 +76,31 @@ function plotChart (data) {
     chart.draw();
 }
 
-start();
+function startRecord (){
+  fetch('http://localhost:5000/start', {
+        method:'GET',
+        headers:{
+            'Content-Type':'application/json'
+        }
+    });
+
+  // document.getElementById('start').disable = true;
+  // document.getElementById('stop').disable = false;
+  tokenRecord = setInterval(start, 300)
+}
+
+function stopRecord (){
+  fetch('http://localhost:5000/stop', {
+        method:'GET',
+        headers:{
+            'Content-Type':'application/json'
+        }
+    });
+
+  clearInterval(tokenRecord)
+  // document.getElementById('start').disable = false;
+  // document.getElementById('stop').disable = true;
+}
+
+
 
