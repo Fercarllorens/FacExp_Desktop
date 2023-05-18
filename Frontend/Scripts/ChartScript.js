@@ -76,6 +76,37 @@ async function plotChart (data) {
     chart.draw();
 }
 
+function plotVoidChart (){
+  var data1 = [
+    {x: "neutral", value: 0},
+    {x: "happy", value: 0},
+    {x: "surprise", value: 0},
+    {x: "disgust", value: 0},
+    {x: "fear", value: 0},
+    {x: "sad", value: 0},
+    {x: "angry", value: 0}
+  ];
+
+  var chart = anychart.radar();
+
+  // set chart yScale settings
+  chart.yScale()
+    .minimum(0)
+    .maximum(100)
+    .ticks({'interval':20});
+
+   // color alternating cells
+   chart.yGrid().palette(["gray 0.1", "gray 0.2"]);
+
+   chart.area(data1).name('').markers(true).fill("#E55934", 0.3).stroke("#E55934")
+
+   chart.title("User emotions in real time")
+
+   chart.container('container');
+    // initiate chart drawing
+    chart.draw();
+}
+
 function startRecord (){
   fetch('http://localhost:5000/start', {
         method:'GET',
@@ -102,5 +133,6 @@ function stopRecord (){
   // document.getElementById('stop').disable = true;
 }
 
+plotVoidChart()
 
 
