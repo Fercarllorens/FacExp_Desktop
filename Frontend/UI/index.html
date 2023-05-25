@@ -12,15 +12,21 @@
 </head>
 <body>
     <div id="title-container">
-        <h1 id="title">FacExp</h1>
+        <img id="title" src="../SRC/Images/LogoFacExp.PNG"></h1>
+        <div class="navBtn lastNavBtn"><p id="config">Configuración</p></div>
+        <div class="navBtn" id="selected"><p id="inicio">Inicio</p></div>
     </div>
-    <div id="stream-container">
-        <img id="stream">
+    <div id="left-container">
+        <div id="stream-container">
+            <img id="stream">
+        </div>
+        <div id="btn-container">
+            <button class="btn btn-primary" id="start" onclick="startRecord()">START</button>
+            <button class="btn btn-danger" id="stop" onclick="stopRecord()" >STOP</button>
+        </div>
     </div>
-    <div id="container"></div>
-    <div id="btn-container">
-        <button class="btn btn-primary" id="start" onclick="startRecord()">START</button>
-        <button class="btn btn-danger" id="stop" onclick="stopRecord()" >STOP</button>
+    <div id="right-container">
+        <div id="container"></div>
     </div>
     <script src="../Scripts/ChartScript.js"></script>
 </body>

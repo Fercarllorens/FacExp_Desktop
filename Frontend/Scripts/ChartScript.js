@@ -66,7 +66,7 @@ async function plotChart (data) {
     // chart.area(data3).name('Squirtle').markers(true).fill("#5BC0EB", 0.3).stroke("#5BC0EB")
 
     // set chart title
-    chart.title("User emotions in real time")
+    chart.title("")
       // set legend
       .legend(true);
 
@@ -100,7 +100,7 @@ function plotVoidChart (){
 
    chart.area(data1).name('').markers(true).fill("#E55934", 0.3).stroke("#E55934")
 
-   chart.title("User emotions in real time")
+   chart.title("");
 
    chart.container('container');
     // initiate chart drawing
