@@ -5,29 +5,106 @@
     <script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-radar.min.js"></script>
     <link rel="stylesheet" href="../CSS/bootstrap.min.css">
     <link rel="stylesheet" href="../CSS/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FacExp Desktop</title>
 </head>
 <body>
-    <div id="title-container">
-        <img id="title" src="../SRC/Images/LogoFacExp.PNG"></h1>
-        <div class="navBtn lastNavBtn"><p id="config">Configuración</p></div>
-        <div class="navBtn" id="selected"><p id="inicio">Inicio</p></div>
-    </div>
-    <div id="left-container">
-        <div id="stream-container">
-            <img id="stream">
+    <div id="bodyMain">
+        <div id="title-container">
+            <img id="title" src="../SRC/Images/LogoFacExp.PNG"></h1>
+            <div class="navBtn lastNavBtn" onclick="changePageConfig()"><p id="config">Settings</p></div>
+            <div class="navBtn" id="selected" onclick="changePageMain()"><p id="inicio">Home</p></div>
         </div>
-        <div id="btn-container">
-            <button class="btn btn-primary" id="start" onclick="startRecord()">START</button>
-            <button class="btn btn-danger" id="stop" onclick="stopRecord()" >STOP</button>
+        <div id="left-container">
+            <div id="stream-container">
+                <img id="stream">
+            </div>
+            <div id="btn-container">
+                <button class="btn btn-primary" id="start" onclick="startRecord()">START</button>
+                <button class="btn btn-danger" id="stop" onclick="stopRecord()" >STOP</button>
+            </div>
+        </div>
+        <div id="right-container">
+            <div id="container"></div>
+            <div class="emotion-log" id="secondModel">
+                <div class="top-log">
+                    <p class="title-model" id="textSecondModel">Modelo 1</p>
+                </div>
+                <p class="text-emotion"><span class="bold-text-emotion">Angry</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Disgust</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Fear</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Happy</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Neutral</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Sad</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Surprise</span> 0%</p>
+            </div>
+            <div class="emotion-log" id="firstModel">
+                <div class="top-log">
+                    <p class="title-model" id="textFirstModel">Modelo 2</p>
+                </div>
+                <p class="text-emotion"><span class="bold-text-emotion">Angry</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Disgust</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Fear</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Happy</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Neutral</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Sad</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Surprise</span> 0%</p>
+            </div>
+            <div class="emotion-log" id="thirdModel">
+                <div class="top-log">
+                    <p class="title-model" id="textThirdModel">Modelo 3</p>
+                </div>
+                <p class="text-emotion"><span class="bold-text-emotion">Angry</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Disgust</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Fear</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Happy</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Neutral</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Sad</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Surprise</span> 0%</p>
+            </div>
         </div>
     </div>
-    <div id="right-container">
-        <div id="container"></div>
+    <div id="bodyCfg">
+        <div id="title-container">
+            <img id="title" src="../SRC/Images/LogoFacExp.PNG"></h1>
+            <div class="navBtn lastNavBtn" id="selected" onclick="changePageConfig()"><p id="config">Settings</p></div>
+            <div class="navBtn" onclick="changePageMain()"><p id="inicio">Home</p></div>
+        </div>
+        <div id="statusContainer">
+            <div class="top-config-container">
+                <div class="label-top-config-container">
+                    <p class="title-config-container">
+                        Current status
+                    </p>
+                </div>
+                <div class="status-container-div">
+                    <p class="text-setting" id="version"><span class="bold-text-setting">Api version:</span> v1.0</p>
+                    <p class="text-setting" id="status"><span class="bold-text-setting">Api status:</span> Disconnected</p>
+                    <p class="text-setting" id="uri"><span class="bold-text-setting">Api uri:</span> http://127.0.0.1:5000</p>
+                </div>
+                <div class="status-container-div">
+                    <p class="text-setting" id="version"><span class="bold-text-setting">Deepface analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
+                    <p class="text-setting" id="status"><span class="bold-text-setting">Transfer Learning analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
+                    <p class="text-setting" id="uri"><span class="bold-text-setting">Deep Learning analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
+                </div>
+                <div class="status-container-div">
+                    <p class="text-setting" id="version"><span class="bold-text-setting">Video recording folder:</span> Default (folder: Video)</p>
+                    <p class="text-setting" id="status"><span class="bold-text-setting">Screen recording folder:</span> Default (folder: Screen)</p>
+                    <p class="text-setting" id="uri"><span class="bold-text-setting">CSV recording folder:</span> Default (folder: Image)</p>
+                </div>
+            </div>
+        </div>
+        <div id="leftConfig">
+        </div>
+        <div id="rightConfig">
+
+        </div>
     </div>
     <script src="../Scripts/ChartScript.js"></script>
+    <script src="../Scripts/frontLogic.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
