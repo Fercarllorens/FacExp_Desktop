@@ -1,0 +1,1 @@
+{"API version": "v1.0", "DeepFace": false, "Transfer Learning": false, "Deep Learning": false, "Video": true, "Video Folder": "Default (folder: Video)", "Screen": true, "Screen Folder": "Default (folder: Screen)", "Logs": true, "Logs Folder": "Default (folder: CSV)", "Threshold": 1000, "Threshold mode": false}

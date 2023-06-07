@@ -86,18 +86,61 @@
                     <p class="text-setting" id="uri"><span class="bold-text-setting">Api uri:</span> http://127.0.0.1:5000</p>
                 </div>
                 <div class="status-container-div">
-                    <p class="text-setting" id="version"><span class="bold-text-setting">Deepface analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
-                    <p class="text-setting" id="status"><span class="bold-text-setting">Transfer Learning analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
-                    <p class="text-setting" id="uri"><span class="bold-text-setting">Deep Learning analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
+                    <p class="text-setting" id="DeepFace"><span class="bold-text-setting">Deepface analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
+                    <p class="text-setting" id="Transfer"><span class="bold-text-setting">Transfer Learning analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
+                    <p class="text-setting" id="DeepLearning"><span class="bold-text-setting">Deep Learning analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
                 </div>
                 <div class="status-container-div">
-                    <p class="text-setting" id="version"><span class="bold-text-setting">Video recording folder:</span> Default (folder: Video)</p>
-                    <p class="text-setting" id="status"><span class="bold-text-setting">Screen recording folder:</span> Default (folder: Screen)</p>
-                    <p class="text-setting" id="uri"><span class="bold-text-setting">CSV recording folder:</span> Default (folder: Image)</p>
+                    <p class="text-setting" id="VideoFolder"><span class="bold-text-setting">Video recording folder:</span> Default (folder: Video)</p>
+                    <p class="text-setting" id="ScreenFolder"><span class="bold-text-setting">Screen recording folder:</span> Default (folder: Screen)</p>
+                    <p class="text-setting" id="CSVFolder"><span class="bold-text-setting">CSV recording folder:</span> Default (folder: CSV)</p>
                 </div>
             </div>
         </div>
         <div id="leftConfig">
+            <div class="config-container" id="ModelsContainer">
+                <div class="top-config-container">
+                    <div class="label-top-config-container">
+                        <p class="title-config-container">
+                            Models
+                        </p>
+                    </div>
+                </div>
+                <div class="model-container-description">
+                    <p class="text-setting bold-text-setting">Select the models to be used in the analysis:</p>
+                </div>
+                <div class="model-container-div">
+                    <p class="text-setting"><span class="bold-text-setting">DeepFace</span>
+                        <label class="switch">
+                        <input type="checkbox" id="DeepFaceEnable">
+                        <span class="slider round"></span>
+                        </label>
+                    </p>
+                </div>
+                <div class="model-container-div">
+                    <p class="text-setting"><span class="bold-text-setting">Transfer Learning</span>
+                        <label class="switch">
+                        <input type="checkbox" id="TransferEnable">
+                        <span class="slider round"></span>
+                        </label>
+                    </p>
+                </div>
+                <div class="model-container-div">
+                    <p class="text-setting"><span class="bold-text-setting">Deep Learning</span>
+                        <label class="switch">
+                        <input type="checkbox" id="DeepLearningEnable">
+                        <span class="slider round"></span>
+                        </label>
+                    </p>
+                </div>
+                <div class="bottom-config-container">
+                    <div class="button-bottom-config-container">
+                        <p class="text-button-config-container">
+                            Submit
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="rightConfig">
 

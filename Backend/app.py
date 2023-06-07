@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import cv2
 import csv
 from deepface import DeepFace 
@@ -6,9 +6,15 @@ import time
 import calendar
 from datetime import timedelta
 from threading import Thread
+import json
 
 # IMPORT OF HAARCASCADE FOR FACE DETECTION
-face_cascade = cv2.CascadeClassifier('haarcascade//haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier('Backend//haarcascade//haarcascade_frontalface_default.xml')
+
+# STATUS MEMORY
+f = open("Backend//Status//config.json")
+status_memory = json.load(f)
+f.close()
 
 # Logs stuff
 timeInit = 0
@@ -18,7 +24,7 @@ headersCSV = ['id','steady_timestamp','uct_timestamp','HMS','dominant','neutral'
 saveCSVFlag = False
 reset_counter = 0
 
-f = open('CSV//timestamptest.csv','w',newline='')
+f = open('Backend//CSV//timestamptest.csv','w',newline='')
 writer = csv.writer(f)
 writer.writerow(headersCSV)
 # VARIABLES FOR DEEPFACE EXPRESSIONS ~ SOFT CLASSIFIER ~
@@ -162,6 +168,29 @@ def stopDF():
     global threadActive
     threadActive = False
     return jsonify({"Analysing": "FALSE"})
+
+@app.route('/status', methods= ['GET'])
+def sendStatus():
+    return status_memory
+
+@app.route('/models', methods=['POST'])
+def updateModels():
+    request_data = request.get_json()
+
+    deepFaceNewStatus = request_data['DeepFace']
+    transferNewStatus = request_data['Transfer']
+    deepLearningNewStatus = request_data['DeepLearning']
+
+    status_memory['Deepface'] = deepFaceNewStatus
+    status_memory['Transfer Learning'] = transferNewStatus
+    status_memory['Deep Learning'] = deepLearningNewStatus
+
+    f = open("Backend//Status//config.json", 'w+')
+    f.write(json.dumps(status_memory))
+    f.close()
+
+    return status_memory
+
 
 if __name__ == "__main__":
     app.run(debug=True)
