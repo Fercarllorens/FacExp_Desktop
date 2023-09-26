@@ -55,6 +55,11 @@ txtEmotionDF = ""
 txtEmotionTL = ""
 txtEmotionDL = ""
 
+#Threshold analysis
+windowDF = []
+windowTL = []
+windowDL = []
+
 #Stream values
 ret = None
 frame = None
@@ -149,7 +154,6 @@ def start_screen_record():
         out.write(image)
     out.release()
 
-
         
 
 def start_analysis_deepFace():
@@ -179,6 +183,23 @@ def start_analysis_deepFace():
 
             global emotion_confidenceDF
             emotion_confidenceDF = [neutralDF, happyDF, surpriseDF, disgustDF, fearDF, sadDF, angryDF]
+            
+            global windowDF
+            if status_memory['Threshold mode']:
+                timeNow = time.time()
+                instantAnalysis = {"time":timeNow, "analysis":emotion_confidenceDF}
+                windowDF.append(instantAnalysis)
+                
+                timeThreshold = timeNow - (status_memory["Threshold"]/2)/1000
+
+                for element in windowDF:
+                    if element["time"] < timeThreshold:
+                        windowDF.remove(element)
+                    else:
+                        break
+
+                
+
 
 def start_analysis_transfer():
     global txtEmotionTL
@@ -220,6 +241,20 @@ def start_analysis_transfer():
                 txtEmotionTL = emotion_names[np.argmax(emotion_confidenceTL)]
             else:
                 txtEmotionTL = ""
+            
+            global windowTL
+            if status_memory['Threshold mode']:
+                timeNow = time.time()
+                instantAnalysis = {"time":timeNow, "analysis":emotion_confidenceTL}
+                windowTL.append(instantAnalysis)
+                
+                timeThreshold = timeNow - (status_memory["Threshold"]/2)/1000
+
+                for element in windowTL:
+                    if element["time"] < timeThreshold:
+                        windowTL.remove(element)
+                    else:
+                        break
 
 def start_analysis_deepLearning():
     global txtEmotionDL
@@ -268,6 +303,20 @@ def start_analysis_deepLearning():
                 txtEmotionDL = emotion_names[np.argmax(emotion_confidenceDL)]
             else:
                 txtEmotionDL = ""
+
+            global windowDL
+            if status_memory['Threshold mode']:
+                timeNow = time.time()
+                instantAnalysis = {"time":timeNow, "analysis":emotion_confidenceDL}
+                windowDL.append(instantAnalysis)
+                
+                timeThreshold = timeNow - (status_memory["Threshold"]/2)/1000
+
+                for element in windowDL:
+                    if element["time"] < timeThreshold:
+                        windowDL.remove(element)
+                    else:
+                        break
 
 def start_log() :
     global txtEmotionDF
@@ -496,88 +545,102 @@ def get_emotions():
 
     FinalJSONTxt = "{"
 
-    if status_memory['DeepFace']:
-        neutralDF = emotion_confidenceDF[0]
-        happyDF = emotion_confidenceDF[1]
-        surpriseDF = emotion_confidenceDF[2]
-        disgustDF = emotion_confidenceDF[3]
-        fearDF = emotion_confidenceDF[4]
-        sadDF = emotion_confidenceDF[5]
-        angryDF = emotion_confidenceDF[6]
+    if not status_memory["Threshold mode"]:
+        if status_memory['DeepFace']:
+            neutralDF = emotion_confidenceDF[0]
+            happyDF = emotion_confidenceDF[1]
+            surpriseDF = emotion_confidenceDF[2]
+            disgustDF = emotion_confidenceDF[3]
+            fearDF = emotion_confidenceDF[4]
+            sadDF = emotion_confidenceDF[5]
+            angryDF = emotion_confidenceDF[6]
 
-        DFJSON = {"DeepFace":{
-                             "DominantEmotionDF":txtEmotionDF, 
-                             "angryDF":str('%.4f'%(angryDF)).replace('.',','),
-                             "disgustDF":str('%.4f'%(disgustDF)).replace('.',','),
-                             "fearDF":str('%.4f'%(fearDF)).replace('.',','),
-                             "happyDF":str('%.4f'%(happyDF)).replace('.',','),
-                             "sadDF":str('%.4f'%(sadDF)).replace('.',','),
-                             "surpriseDF":str('%.4f'%(surpriseDF)).replace('.',','),
-                             "neutralDF":str('%.4f'%(neutralDF)).replace('.',',')
-                         }}
-        
-        DFJSONTxt = json.dumps(DFJSON)[1:-1]
+            DFJSON = {"DeepFace":{
+                                "DominantEmotion":txtEmotionDF, 
+                                "angry":str('%.4f'%(angryDF)).replace('.',','),
+                                "disgust":str('%.4f'%(disgustDF)).replace('.',','),
+                                "fear":str('%.4f'%(fearDF)).replace('.',','),
+                                "happy":str('%.4f'%(happyDF)).replace('.',','),
+                                "sad":str('%.4f'%(sadDF)).replace('.',','),
+                                "surprise":str('%.4f'%(surpriseDF)).replace('.',','),
+                                "neutral":str('%.4f'%(neutralDF)).replace('.',',')
+                            }}
+            
+            DFJSONTxt = json.dumps(DFJSON)[1:-1]
 
-        FinalJSONTxt = FinalJSONTxt + DFJSONTxt
+            FinalJSONTxt = FinalJSONTxt + DFJSONTxt
 
-        if status_memory['Transfer Learning'] or status_memory ['Deep Learning']:
-            FinalJSONTxt = FinalJSONTxt + ',\n'
+            if status_memory['Transfer Learning'] or status_memory ['Deep Learning']:
+                FinalJSONTxt = FinalJSONTxt + ',\n'
 
-    if status_memory['Transfer Learning']:
-        neutralTL = emotion_confidenceTL[0]
-        happyTL = emotion_confidenceTL[1]
-        surpriseTL = emotion_confidenceTL[2]
-        disgustTL = emotion_confidenceTL[3]
-        fearTL = emotion_confidenceTL[4]
-        sadTL = emotion_confidenceTL[5]
-        angryTL = emotion_confidenceTL[6]
+        if status_memory['Transfer Learning']:
+            neutralTL = emotion_confidenceTL[0]
+            happyTL = emotion_confidenceTL[1]
+            surpriseTL = emotion_confidenceTL[2]
+            disgustTL = emotion_confidenceTL[3]
+            fearTL = emotion_confidenceTL[4]
+            sadTL = emotion_confidenceTL[5]
+            angryTL = emotion_confidenceTL[6]
 
-        TLJSON = {"TransferLearning":{
-                             "DominantEmotionTL":txtEmotionTL, 
-                             "angryTL":str('%.4f'%(angryTL)).replace('.',','),
-                             "disgustTL":str('%.4f'%(disgustTL)).replace('.',','),
-                             "fearTL":str('%.4f'%(fearTL)).replace('.',','),
-                             "happyTL":str('%.4f'%(happyTL)).replace('.',','),
-                             "sadTL":str('%.4f'%(sadTL)).replace('.',','),
-                             "surpriseTL":str('%.4f'%(surpriseTL)).replace('.',','),
-                             "neutralTL":str('%.4f'%(neutralTL)).replace('.',',')
-                         }}
-        
+            TLJSON = {"TransferLearning":{
+                                "DominantEmotion":txtEmotionTL, 
+                                "angry":str('%.4f'%(angryTL)).replace('.',','),
+                                "disgust":str('%.4f'%(disgustTL)).replace('.',','),
+                                "fear":str('%.4f'%(fearTL)).replace('.',','),
+                                "happy":str('%.4f'%(happyTL)).replace('.',','),
+                                "sad":str('%.4f'%(sadTL)).replace('.',','),
+                                "surprise":str('%.4f'%(surpriseTL)).replace('.',','),
+                                "neutral":str('%.4f'%(neutralTL)).replace('.',',')
+                            }}
+            
 
-        TLJSONTxt = json.dumps(TLJSON)[1:-1]
+            TLJSONTxt = json.dumps(TLJSON)[1:-1]
 
-        FinalJSONTxt = FinalJSONTxt + TLJSONTxt
+            FinalJSONTxt = FinalJSONTxt + TLJSONTxt
 
-        if status_memory ['Deep Learning']:
-            FinalJSONTxt = FinalJSONTxt + ',\n'
+            if status_memory ['Deep Learning']:
+                FinalJSONTxt = FinalJSONTxt + ',\n'
 
-    if status_memory['Deep Learning']:
-        neutralDL = emotion_confidenceDL[0]
-        happyDL = emotion_confidenceDL[1]
-        surpriseDL = emotion_confidenceDL[2]
-        disgustDL = emotion_confidenceDL[3]
-        fearDL = emotion_confidenceDL[4]
-        sadDL = emotion_confidenceDL[5]
-        angryDL = emotion_confidenceDL[6]
+        if status_memory['Deep Learning']:
+            neutralDL = emotion_confidenceDL[0]
+            happyDL = emotion_confidenceDL[1]
+            surpriseDL = emotion_confidenceDL[2]
+            disgustDL = emotion_confidenceDL[3]
+            fearDL = emotion_confidenceDL[4]
+            sadDL = emotion_confidenceDL[5]
+            angryDL = emotion_confidenceDL[6]
 
-        DLJSON = {"DeepLearning": {
-                             "DominantEmotionDL":txtEmotionDL, 
-                             "angryDL":str('%.4f'%(angryDL)).replace('.',','),
-                             "disgustDL":str('%.4f'%(disgustDL)).replace('.',','),
-                             "fearDL":str('%.4f'%(fearDL)).replace('.',','),
-                             "happyDL":str('%.4f'%(happyDL)).replace('.',','),
-                             "sadDL":str('%.4f'%(sadDL)).replace('.',','),
-                             "surpriseDL":str('%.4f'%(surpriseDL)).replace('.',','),
-                             "neutralDL":str('%.4f'%(neutralDL)).replace('.',',')
-                         }}
-        
-        DLJSONTxt = json.dumps(DLJSON)[1:-1]
+            DLJSON = {"DeepLearning": {
+                                "DominantEmotion":txtEmotionDL, 
+                                "angry":str('%.4f'%(angryDL)).replace('.',','),
+                                "disgust":str('%.4f'%(disgustDL)).replace('.',','),
+                                "fear":str('%.4f'%(fearDL)).replace('.',','),
+                                "happy":str('%.4f'%(happyDL)).replace('.',','),
+                                "sad":str('%.4f'%(sadDL)).replace('.',','),
+                                "surprise":str('%.4f'%(surpriseDL)).replace('.',','),
+                                "neutral":str('%.4f'%(neutralDL)).replace('.',',')
+                            }}
+            
+            DLJSONTxt = json.dumps(DLJSON)[1:-1]
 
-        FinalJSONTxt = FinalJSONTxt + DLJSONTxt
+            FinalJSONTxt = FinalJSONTxt + DLJSONTxt
 
-    FinalJSONTxt = FinalJSONTxt + '}'
-    print(FinalJSONTxt)
-    FinalJSON = json.loads(FinalJSONTxt)
+        FinalJSONTxt = FinalJSONTxt + '}'
+        print(FinalJSONTxt)
+        FinalJSON = json.loads(FinalJSONTxt)
+    
+    else:
+        time.sleep((status_memory["Threshold"]/2)/1000)
+       
+        actualDF = windowDF
+        actualTL = windowTL
+        actualDL = windowDL
+
+    FinalJSON = {
+        "DeepFace": averageEmotion(actualDF),
+        "TransferLearning": averageEmotion(actualTL),
+        "DeepLearning": averageEmotion(actualDL)
+    }        
 
     if threadingActive:
         return FinalJSON
@@ -586,6 +649,37 @@ def get_emotions():
            "Analysing": "FALSE"
         })
         
+
+def averageEmotion(list):
+
+    names = ["neutral", "happy", "surprise", "disgust", "fear", "sad", "angry"]
+    values = [0,0,0,0,0,0,0]
+
+    for element in list:
+        count = 0
+        for value in element["analysis"]:
+            values[count] += value
+            count = count +1
+    
+    count = 0
+    for element in values:
+        values[count] = element/len(list)
+        count = count +1
+    
+    dominant = names[np.argmax(values)]
+
+    return {
+                "DominantEmotion":dominant, 
+                "angry":str('%.4f'%(values[6])).replace('.',','),
+                "disgust":str('%.4f'%(values[3])).replace('.',','),
+                "fear":str('%.4f'%(values[4])).replace('.',','),
+                "happy":str('%.4f'%(values[1])).replace('.',','),
+                "sad":str('%.4f'%(values[5])).replace('.',','),
+                "surprise":str('%.4f'%(values[2])).replace('.',','),
+                "neutral":str('%.4f'%(values[0])).replace('.',',')
+            }
+
+
 
 @app.route('/start', methods= ['GET'])
 def startDF():
