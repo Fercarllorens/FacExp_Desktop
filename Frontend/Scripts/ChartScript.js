@@ -11,40 +11,48 @@ function start() {
     .then(resp => resp.json())
     .then((data) => plotChart(data))
     .catch(error => console.log(error));
-  }
+}
 
 async function plotChart (data) {
 
     document.getElementById('container').innerHTML = "";
     
-    // our data from bulbapedia
+  if (data.hasOwnProperty("DeepFace")){
    var data1 = [
-     {x: "neutral", value: parseFloat(data.neutral)},
-     {x: "happy", value: parseFloat(data.happy)},
-     {x: "surprise", value: parseFloat(data.surprise)},
-     {x: "disgust", value: parseFloat(data.disgust)},
-     {x: "fear", value: parseFloat(data.fear)},
-     {x: "sad", value: parseFloat(data.sad)},
-     {x: "angry", value: parseFloat(data.angry)}
+     {x: "neutral", value: parseFloat(data.DeepFace.neutralDF)},
+     {x: "happy", value: parseFloat(data.DeepFace.happyDF)},
+     {x: "surprise", value: parseFloat(data.DeepFace.surpriseDF)},
+     {x: "disgust", value: parseFloat(data.DeepFace.disgustDF)},
+     {x: "fear", value: parseFloat(data.DeepFace.fearDF)},
+     {x: "sad", value: parseFloat(data.DeepFace.sadDF)},
+     {x: "angry", value: parseFloat(data.DeepFace.angryDF)}
    ];
+  }
 
-//    var data2 = [
-//      {x: "Speed", value: 45},
-//      {x: "HP", value: 45},
-//      {x: "Defense", value: 49},
-//      {x: "Special Defense", value: 65},
-//      {x: "Special Attack", value: 65},
-//      {x: "Attack", value: 49}
-//    ];  
 
-//    var data3 = [
-//      {x: "Speed", value: 43},
-//      {x: "HP", value: 44},
-//      {x: "Defense", value: 65},
-//      {x: "Special Defense", value: 64},
-//      {x: "Special Attack", value: 50},
-//      {x: "Attack", value: 48}
-//    ];  
+  if (data.hasOwnProperty("TransferLearning")){
+   var data2 = [
+    {x: "neutral", value: parseFloat(data.TransferLearning.neutralTL)},
+    {x: "happy", value: parseFloat(data.TransferLearning.happyTL)},
+    {x: "surprise", value: parseFloat(data.TransferLearning.surpriseTL)},
+    {x: "disgust", value: parseFloat(data.TransferLearning.disgustTL)},
+    {x: "fear", value: parseFloat(data.TransferLearning.fearTL)},
+    {x: "sad", value: parseFloat(data.TransferLearning.sadTL)},
+    {x: "angry", value: parseFloat(data.TransferLearning.angryTL)}
+  ];
+}
+
+if (data.hasOwnProperty("DeepLearning")){
+  var data3 = [
+    {x: "neutral", value: parseFloat(data.DeepLearning.neutralDL)},
+    {x: "happy", value: parseFloat(data.DeepLearning.happyDL)},
+    {x: "surprise", value: parseFloat(data.DeepLearning.surpriseDL)},
+    {x: "disgust", value: parseFloat(data.DeepLearning.disgustDL)},
+    {x: "fear", value: parseFloat(data.DeepLearning.fearDL)},
+    {x: "sad", value: parseFloat(data.DeepLearning.sadDL)},
+    {x: "angry", value: parseFloat(data.DeepLearning.angryDL)}
+  ];  
+}
 
    // create radar chart
    var chart = anychart.radar();
@@ -59,11 +67,17 @@ async function plotChart (data) {
     chart.yGrid().palette(["gray 0.1", "gray 0.2"]);
 
     // create first series
-    chart.area(data1).name('DeepFace').markers(true).fill("#E55934", 0.3).stroke("#E55934")
+    if (data.hasOwnProperty("DeepFace")){
+      chart.area(data1).name('DeepFace').markers(true).fill("#E55934", 0.3).stroke("#E55934")
+    }
     // create second series
-    // chart.area(data2).name('Bulbasaur').markers(true).fill("#9BC53D", 0.3).stroke("#9BC53D")
-    // // create third series
-    // chart.area(data3).name('Squirtle').markers(true).fill("#5BC0EB", 0.3).stroke("#5BC0EB")
+    if (data.hasOwnProperty("TransferLearning")){
+      chart.area(data2).name('Transfer Learninig').markers(true).fill("#9BC53D", 0.3).stroke("#9BC53D")
+    }
+    // create third series
+    if (data.hasOwnProperty("DeepLearning")){
+      chart.area(data3).name('Deep Learninig').markers(true).fill("#5BC0EB", 0.3).stroke("#5BC0EB")
+    }
 
     // set chart title
     chart.title("")
@@ -74,6 +88,49 @@ async function plotChart (data) {
     chart.container('container');
     // initiate chart drawing
     chart.draw();
+
+    printLogs(data);
+}
+
+function printLogs(data){
+  if (data.hasOwnProperty("DeepFace")){
+    document.getElementById('AngryDF').textContent = data.DeepFace.angryDF + '%';
+    document.getElementById('DisgustDF').textContent = data.DeepFace.disgustDF + '%';
+    document.getElementById('FearDF').textContent = data.DeepFace.fearDF + '%';
+    document.getElementById('HappyDF').textContent = data.DeepFace.happyDF + '%';
+    document.getElementById('NeutralDF').textContent = data.DeepFace.neutralDF + '%';
+    document.getElementById('SadDF').textContent = data.DeepFace.sadDF + '%';
+    document.getElementById('SurpriseDF').textContent = data.DeepFace.surpriseDF + '%';
+
+    document.getElementById('secondModel').style.borderColor = "#E55934";
+    document.getElementById('secondModelTop').style.background = "#E55934";
+  }
+
+  if (data.hasOwnProperty("TransferLearning")){
+    document.getElementById('AngryTL').textContent = data.TransferLearning.angryTL + '%';
+    document.getElementById('DisgustTL').textContent = data.TransferLearning.disgustTL + '%';
+    document.getElementById('FearTL').textContent = data.TransferLearning.fearTL + '%';
+    document.getElementById('HappyTL').textContent = data.TransferLearning.happyTL + '%';
+    document.getElementById('NeutralTL').textContent = data.TransferLearning.neutralTL + '%';
+    document.getElementById('SadTL').textContent = data.TransferLearning.sadTL + '%';
+    document.getElementById('SurpriseTL').textContent = data.TransferLearning.surpriseTL + '%';
+
+    document.getElementById('firstModel').style.borderColor = "#9BC53D";
+    document.getElementById('firstModelTop').style.background = "#9BC53D";
+  }
+
+  if (data.hasOwnProperty("DeepLearning")){
+    document.getElementById('AngryDL').textContent = data.DeepLearning.angryDL + '%';
+    document.getElementById('DisgustDL').textContent = data.DeepLearning.disgustDL + '%';
+    document.getElementById('FearDL').textContent = data.DeepLearning.fearDL + '%';
+    document.getElementById('HappyDL').textContent = data.DeepLearning.happyDL + '%';
+    document.getElementById('NeutralDL').textContent = data.DeepLearning.neutralDL + '%';
+    document.getElementById('SadDL').textContent = data.DeepLearning.sadDL + '%';
+    document.getElementById('SurpriseDL').textContent = data.DeepLearning.surpriseDL + '%';
+
+    document.getElementById('thirdModel').style.borderColor = "#5BC0EB";
+    document.getElementById('thirdModelTop').style.background = "#5BC0EB";
+  }
 }
 
 function plotVoidChart (){
@@ -98,11 +155,16 @@ function plotVoidChart (){
    // color alternating cells
    chart.yGrid().palette(["gray 0.1", "gray 0.2"]);
 
-   chart.area(data1).name('').markers(true).fill("#E55934", 0.3).stroke("#E55934")
+    // create first series
+    chart.area(data1).name('NO MODELS').markers(true).fill("gray", 0.3).stroke("gray")
 
-   chart.title("");
+    // set chart title
+    chart.title("")
+      // set legend
+      .legend(true);
 
-   chart.container('container');
+    // set container id for the chart
+    chart.container('container');
     // initiate chart drawing
     chart.draw();
 }

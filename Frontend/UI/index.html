@@ -15,7 +15,7 @@
     <div id="bodyMain">
         <div id="title-container">
             <img id="title" src="../SRC/Images/LogoFacExp.PNG"></h1>
-            <div class="navBtn lastNavBtn" onclick="changePageConfig()"><p id="config">Settings</p></div>
+            <div class="navBtn lastNavBtn" onclick="changePageConfig(); getStatus();"><p id="config">Settings</p></div>
             <div class="navBtn" id="selected" onclick="changePageMain()"><p id="inicio">Home</p></div>
         </div>
         <div id="left-container">
@@ -26,51 +26,55 @@
                 <button class="btn btn-primary" id="start" onclick="startRecord()">START</button>
                 <button class="btn btn-danger" id="stop" onclick="stopRecord()" >STOP</button>
             </div>
+            <div id="btn-container-task">
+                <button class="btn btn-primary" id="task" onclick="startTask()">TASK</button>
+                <button class="btn btn-danger" id="notask" onclick="stopTask()" >NO TASK</button>
+            </div>
         </div>
         <div id="right-container">
             <div id="container"></div>
             <div class="emotion-log" id="secondModel">
-                <div class="top-log">
-                    <p class="title-model" id="textSecondModel">Modelo 1</p>
+                <div class="top-log" id="secondModelTop">
+                    <p class="title-model" id="textSecondModel">DeepFace</p>
                 </div>
-                <p class="text-emotion"><span class="bold-text-emotion">Angry</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Disgust</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Fear</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Happy</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Neutral</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Sad</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Surprise</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Angry</span> <span id="AngryDF">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Disgust</span> <span id="DisgustDF">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Fear</span> <span id="FearDF">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Happy</span> <span id="HappyDF">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Neutral</span> <span id="NeutralDF">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Sad</span> <span id="SadDF">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Surprise</span> <span id="SurpriseDF">0%</span></p>
             </div>
             <div class="emotion-log" id="firstModel">
-                <div class="top-log">
-                    <p class="title-model" id="textFirstModel">Modelo 2</p>
+                <div class="top-log" id="firstModelTop">
+                    <p class="title-model" id="textFirstModel">Transfer Learning</p>
                 </div>
-                <p class="text-emotion"><span class="bold-text-emotion">Angry</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Disgust</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Fear</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Happy</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Neutral</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Sad</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Surprise</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Angry</span> <span id="AngryTL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Disgust</span> <span id="DisgustTL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Fear</span> <span id="FearTL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Happy</span> <span id="HappyTL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Neutral</span> <span id="NeutralTL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Sad</span> <span id="SadTL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Surprise</span> <span id="SurpriseTL">0%</span></p>
             </div>
             <div class="emotion-log" id="thirdModel">
-                <div class="top-log">
-                    <p class="title-model" id="textThirdModel">Modelo 3</p>
+                <div class="top-log" id="thirdModelTop">
+                    <p class="title-model" id="textThirdModel">Deep Learning</p>
                 </div>
-                <p class="text-emotion"><span class="bold-text-emotion">Angry</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Disgust</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Fear</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Happy</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Neutral</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Sad</span> 0%</p>
-                <p class="text-emotion"><span class="bold-text-emotion">Surprise</span> 0%</p>
+                <p class="text-emotion"><span class="bold-text-emotion">Angry</span> <span id="AngryDL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Disgust</span> <span id="DisgustDL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Fear</span> <span id="FearDL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Happy</span> <span id="HappyDL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Neutral</span> <span id="NeutralDL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Sad</span> <span id="SadDL">0%</span></p>
+                <p class="text-emotion"><span class="bold-text-emotion">Surprise</span> <span id="SurpriseDL">0%</span></p>
             </div>
         </div>
     </div>
     <div id="bodyCfg">
         <div id="title-container">
             <img id="title" src="../SRC/Images/LogoFacExp.PNG"></h1>
-            <div class="navBtn lastNavBtn" id="selected" onclick="changePageConfig()"><p id="config">Settings</p></div>
+            <div class="navBtn lastNavBtn" id="selected" onclick="changePageConfig(); getStatus();"><p id="config">Settings</p></div>
             <div class="navBtn" onclick="changePageMain()"><p id="inicio">Home</p></div>
         </div>
         <div id="statusContainer">
@@ -81,19 +85,22 @@
                     </p>
                 </div>
                 <div class="status-container-div">
-                    <p class="text-setting" id="version"><span class="bold-text-setting">Api version:</span> v1.0</p>
-                    <p class="text-setting" id="status"><span class="bold-text-setting">Api status:</span> Disconnected</p>
-                    <p class="text-setting" id="uri"><span class="bold-text-setting">Api uri:</span> http://127.0.0.1:5000</p>
+                    <p class="text-setting" id="status"><span class="bold-text-setting">Api status:</span> <span id="Connection">Disconnected</span></p>
+                    <p class="text-setting"><span class="bold-text-setting">Webcam:</span> <select name="webcamList" id="webcam" onchange="submitWebcam()"></select></p>
+                    <p class="text-setting"><span class="bold-text-setting">Screen:</span> <select name="screenList" id="screen" onchange="submitScreen()">
+                        <option id="screen1" value="1">First screen</option>
+                        <option id="screen2" value="2">Second screen</option>
+                    </select></p>
                 </div>
                 <div class="status-container-div">
-                    <p class="text-setting" id="DeepFace"><span class="bold-text-setting">Deepface analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
-                    <p class="text-setting" id="Transfer"><span class="bold-text-setting">Transfer Learning analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
-                    <p class="text-setting" id="DeepLearning"><span class="bold-text-setting">Deep Learning analysis:</span> Disabled <i class="bi-x-circle-fill icon-fail"></i></p>
+                    <p class="text-setting" id="DeepFace"><span class="bold-text-setting">Deepface analysis:</span> <span id="DeepFaceText">Disabled <i class="bi-x-circle-fill icon-fail"></i></span></p>
+                    <p class="text-setting" id="Transfer"><span class="bold-text-setting">Transfer Learning analysis:</span> <span id="TransferText">Disabled <i class="bi-x-circle-fill icon-fail"></i></span></p>
+                    <p class="text-setting" id="DeepLearning"><span class="bold-text-setting">Deep Learning analysis:</span> <span id="DeepText">Disabled <i class="bi-x-circle-fill icon-fail"></i></span></p>
                 </div>
                 <div class="status-container-div">
-                    <p class="text-setting" id="VideoFolder"><span class="bold-text-setting">Video recording folder:</span> Default (folder: Video)</p>
-                    <p class="text-setting" id="ScreenFolder"><span class="bold-text-setting">Screen recording folder:</span> Default (folder: Screen)</p>
-                    <p class="text-setting" id="CSVFolder"><span class="bold-text-setting">CSV recording folder:</span> Default (folder: CSV)</p>
+                    <p class="text-setting" id="VideoFolder"><span class="bold-text-setting">Video recording folder:</span> <span id="Video-Folder">Default (folder: Video)</span></p>
+                    <p class="text-setting" id="ScreenFolder"><span class="bold-text-setting">Screen recording folder:</span> <span id="Screen-Folder">Default (folder: Screen)</span></p>
+                    <p class="text-setting" id="CSVFolder"><span class="bold-text-setting">CSV recording folder:</span> <span id="Logs-Folder">Default (folder: CSV)</span></p>
                 </div>
             </div>
         </div>
@@ -134,7 +141,57 @@
                     </p>
                 </div>
                 <div class="bottom-config-container">
-                    <div class="button-bottom-config-container">
+                    <div class="button-bottom-config-container" onclick="submitModels()">
+                        <p class="text-button-config-container">
+                            Submit
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="config-container" id="RecordsContainer">
+                <div class="top-config-container">
+                    <div class="label-top-config-container">
+                        <p class="title-config-container">
+                            Recording
+                        </p>
+                    </div>
+                </div>
+                <div class="model-container-description">
+                    <p class="text-setting bold-text-setting">Enable/disable and select folder and name for records:</p>
+                </div>
+                <div class="logs-container-settings">
+                    <p class="text-setting bold-text-setting">Records folder path:</p>
+                    <p class="text-setting bold-text-setting">Records file name:</p>
+                </div>
+                <div class="logs-container-settings">
+                    <input type="text" class="input-text" placeholder="Write path... (// separator)" id="RecordsPath" list="suggest-log">
+                    <datalist id="suggest-log">
+                        <option value="Default">
+                    </datalist>
+                    <input type="text" class="input-text" placeholder="Write name... (not .mp4)" id="RecordsName">
+                </div>
+                <div class="enable-container-record">
+                        <div class="enable-container-record-separator-text">
+                            <p class="text-setting bold-text-setting inline-text">Webcam</p>
+                        </div>
+                        <div class="enable-container-record-separator-check">
+                            <label class="switch switch-block">
+                                <input type="checkbox" id="WebcamEnable">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="enable-container-record-separator-text">
+                            <p class="text-setting bold-text-setting inline-text">Screen</p>
+                        </div>
+                        <div class="enable-container-record-separator-check">
+                            <label class="switch switch-block">
+                                <input type="checkbox" id="ScreenEnable">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                </div>
+                <div class="bottom-config-container">
+                    <div class="button-bottom-config-container" onclick="submitRecords()">
                         <p class="text-button-config-container">
                             Submit
                         </p>
@@ -143,7 +200,41 @@
             </div>
         </div>
         <div id="rightConfig">
-
+            <div class="config-container" id="LogsContainer">
+                <div class="top-config-container">
+                    <div class="label-top-config-container">
+                        <p class="title-config-container">
+                            Logs
+                        </p>
+                    </div>
+                </div>
+                <div class="model-container-description">
+                    <p class="text-setting bold-text-setting">Enable/disable and select folder and name for logs:</p>
+                </div>
+                <div class="logs-container-settings">
+                    <p class="text-setting bold-text-setting">Logs folder path:</p>
+                    <p class="text-setting bold-text-setting">Logs file name:</p>
+                    <p class="text-setting bold-text-setting">Enable logs record</p>
+                </div>
+                <div class="logs-container-settings">
+                    <input type="text" class="input-text" placeholder="Write path... (// separator)" id="LogsPath" list="suggest-log">
+                    <datalist id="suggest-log">
+                        <option value="Default (folder: CSV)">
+                    </datalist>
+                    <input type="text" class="input-text" placeholder="Write name... (not .csv)" id="LogsName">
+                    <label class="switch switch-block">
+                        <input type="checkbox" id="LogsEnable">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="bottom-config-container">
+                    <div class="button-bottom-config-container" onclick="submitLogs()">
+                        <p class="text-button-config-container">
+                            Submit
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="../Scripts/ChartScript.js"></script>
