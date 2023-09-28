@@ -27,8 +27,8 @@
                 <button class="btn btn-danger" id="stop" onclick="stopRecord()" >STOP</button>
             </div>
             <div id="btn-container-task">
-                <button class="btn btn-primary" id="task" onclick="startTask()">TASK</button>
-                <button class="btn btn-danger" id="notask" onclick="stopTask()" >NO TASK</button>
+                <button class="btn btn-primary" id="task" onclick="startTask()">START TASK</button>
+                <button class="btn btn-danger" id="notask" onclick="stopTask()" >STOP TASK</button>
             </div>
         </div>
         <div id="right-container">
@@ -99,7 +99,6 @@
                 </div>
                 <div class="status-container-div">
                     <p class="text-setting" id="VideoFolder"><span class="bold-text-setting">Video recording folder:</span> <span id="Video-Folder">Default (folder: Video)</span></p>
-                    <p class="text-setting" id="ScreenFolder"><span class="bold-text-setting">Screen recording folder:</span> <span id="Screen-Folder">Default (folder: Screen)</span></p>
                     <p class="text-setting" id="CSVFolder"><span class="bold-text-setting">CSV recording folder:</span> <span id="Logs-Folder">Default (folder: CSV)</span></p>
                 </div>
             </div>
@@ -235,6 +234,35 @@
                     </div>
                 </div>
             </div>
+            <div class="config-container" id="ModelsContainer">
+                <div class="top-config-container">
+                    <div class="label-top-config-container">
+                        <p class="title-config-container">
+                            Thresholds
+                        </p>
+                    </div>
+                </div>
+                <div class="model-container-description">
+                    <p class="text-setting bold-text-setting">Enable/disable threshold mode and select time:</p>
+                </div>
+                <div class="model-container-div">
+                    <p class="text-setting"><span class="bold-text-setting">Threshold mode</span>
+                        <label class="switch">
+                        <input type="checkbox" id="ThresholdEnable">
+                        <span class="slider round"></span>
+                        </label>
+                    </p>
+                </div>
+                <div class="model-container-div">
+                    <input type="number" class="input-text" placeholder="Miliseconds" id="Miliseconds">
+                </div>   
+                <div class="bottom-config-container">
+                    <div class="button-bottom-config-container" onclick="submitThreshold()">
+                        <p class="text-button-config-container">
+                            Submit
+                        </p>
+                    </div>
+                </div>
         </div>
     </div>
     <script src="../Scripts/ChartScript.js"></script>

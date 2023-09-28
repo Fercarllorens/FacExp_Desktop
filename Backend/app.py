@@ -17,6 +17,8 @@ from mss import mss
 from PIL import Image
 import win32gui
 from collections import Counter
+import os
+
 
 # IMPORT OF HAARCASCADE FOR FACE DETECTION
 face_cascade = cv2.CascadeClassifier('Backend//haarcascade//haarcascade_frontalface_default.xml')
@@ -762,13 +764,15 @@ def updateThreshold():
     newTime = request_data['ThresholdTime']
 
     status_memory['Threshold mode'] = newStatus
-    status_memory['Threshold'] = newTime
+    if newTime != None and newTime != "":
+        status_memory['Threshold'] = int(newTime)
 
     f = open("Backend//Status//config.json", 'w+')
     f.write(json.dumps(status_memory))
     f.close()
 
     return status_memory
+    
 
 @app.route('/video', methods=['POST'])
 def updateVideoSettings():
@@ -777,8 +781,12 @@ def updateVideoSettings():
     newFolder = request_data['VideoFolder']
     newStatus = request_data['Video']
 
-    if newFolder != '':
-        status_memory['Video Folder'] = newFolder
+    if newFolder != '' and newFolder != "//.mp4":
+        folderIndex = newFolder.rindex("/") - 1
+        folder = newFolder[:folderIndex]
+        isdir = os.path.isdir(folder)
+        if isdir:
+            status_memory['Video Folder'] = newFolder
 
     status_memory['Video'] = newStatus
 
@@ -795,8 +803,12 @@ def updateScreenSettings():
     newFolder = request_data['ScreenFolder']
     newStatus = request_data['Screen']
 
-    if newFolder != '':
-        status_memory['Screen Folder'] = newFolder
+    if newFolder != '' and newFolder != "//_Screen.mp4":
+        folderIndex = newFolder.rindex("/") - 1
+        folder = newFolder[:folderIndex]
+        isdir = os.path.isdir(folder)
+        if isdir:
+            status_memory['Screen Folder'] = newFolder
 
     status_memory['Screen'] = newStatus
 
@@ -814,8 +826,12 @@ def updateLogSettings():
     newFolder = request_data['LogsFolder']
     newStatus = request_data['Logs']
 
-    if newFolder != '':
-        status_memory['Logs Folder'] = newFolder
+    if newFolder != '' and newFolder != "//.csv":
+        folderIndex = newFolder.rindex("/") - 1
+        folder = newFolder[:folderIndex]
+        isdir = os.path.isdir(folder)
+        if isdir:
+            status_memory['Logs Folder'] = newFolder
 
     status_memory['Logs'] = newStatus
 

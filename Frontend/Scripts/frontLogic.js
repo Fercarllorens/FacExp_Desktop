@@ -145,6 +145,25 @@ function submitScreen(){
     getStatus();
 }
 
+function submitThreshold(){
+    time = document.getElementById("Miliseconds").value;
+    enableThreshold = document.getElementById('ThresholdEnable').checked;
+
+    fetch('http://localhost:5000/threshold', {
+        method:'POST',
+        headers:{
+            'Accept':'application/json',
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+            "ThresholdTime":time,
+            "ThresholdMode": enableThreshold 
+        })
+    });
+
+    getStatus();
+}
+
 function startTask(){
     fetch('http://localhost:5000/task', {
         method:'GET',
@@ -209,17 +228,18 @@ function changeStatus(data){
         document.getElementById("DeepText").innerHTML = 'Disabled <i class="bi-x-circle-fill icon-fail"></i>'
     }
 
-    document.getElementById("Video-Folder").textContent = data["Video Folder"] 
-    document.getElementById("Screen-Folder").textContent = data["Screen Folder"] 
+    document.getElementById("Video-Folder").textContent = data["Video Folder"]  
     document.getElementById("Logs-Folder").textContent = data["Logs Folder"] 
 
     document.getElementById("LogsEnable").checked = data["Logs"];
     document.getElementById("WebcamEnable").checked = data["Video"];
     document.getElementById("ScreenEnable").checked = data["Screen"];
+    document.getElementById("ThresholdEnable").checked = data["Threshold mode"]
 
     document.getElementById("webcam").value = data['Webcam']
     document.getElementById("screen").value = data['Screencam']
-    
+
+    document.getElementById("Miliseconds").value = data['Threshold']
 }
 
 
