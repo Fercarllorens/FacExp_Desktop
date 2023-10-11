@@ -17,40 +17,42 @@ async function plotChart (data) {
 
     document.getElementById('container').innerHTML = "";
     
+  console.log(data)
+
   if (data.hasOwnProperty("DeepFace")){
    var data1 = [
-     {x: "neutral", value: parseFloat(data.DeepFace.neutralDF)},
-     {x: "happy", value: parseFloat(data.DeepFace.happyDF)},
-     {x: "surprise", value: parseFloat(data.DeepFace.surpriseDF)},
-     {x: "disgust", value: parseFloat(data.DeepFace.disgustDF)},
-     {x: "fear", value: parseFloat(data.DeepFace.fearDF)},
-     {x: "sad", value: parseFloat(data.DeepFace.sadDF)},
-     {x: "angry", value: parseFloat(data.DeepFace.angryDF)}
+     {x: "neutral", value: parseFloat(data.DeepFace.neutral)},
+     {x: "happy", value: parseFloat(data.DeepFace.happy)},
+     {x: "surprise", value: parseFloat(data.DeepFace.surprise)},
+     {x: "disgust", value: parseFloat(data.DeepFace.disgust)},
+     {x: "fear", value: parseFloat(data.DeepFace.fear)},
+     {x: "sad", value: parseFloat(data.DeepFace.sad)},
+     {x: "angry", value: parseFloat(data.DeepFace.angry)}
    ];
   }
 
 
   if (data.hasOwnProperty("TransferLearning")){
    var data2 = [
-    {x: "neutral", value: parseFloat(data.TransferLearning.neutralTL)},
+    {x: "neutral", value: parseFloat(data.TransferLearning.neutral)},
     {x: "happy", value: parseFloat(data.TransferLearning.happyTL)},
-    {x: "surprise", value: parseFloat(data.TransferLearning.surpriseTL)},
-    {x: "disgust", value: parseFloat(data.TransferLearning.disgustTL)},
-    {x: "fear", value: parseFloat(data.TransferLearning.fearTL)},
-    {x: "sad", value: parseFloat(data.TransferLearning.sadTL)},
-    {x: "angry", value: parseFloat(data.TransferLearning.angryTL)}
+    {x: "surprise", value: parseFloat(data.TransferLearning.surprise)},
+    {x: "disgust", value: parseFloat(data.TransferLearning.disgust)},
+    {x: "fear", value: parseFloat(data.TransferLearning.fear)},
+    {x: "sad", value: parseFloat(data.TransferLearning.sad)},
+    {x: "angry", value: parseFloat(data.TransferLearning.angry)}
   ];
 }
 
 if (data.hasOwnProperty("DeepLearning")){
   var data3 = [
-    {x: "neutral", value: parseFloat(data.DeepLearning.neutralDL)},
-    {x: "happy", value: parseFloat(data.DeepLearning.happyDL)},
-    {x: "surprise", value: parseFloat(data.DeepLearning.surpriseDL)},
-    {x: "disgust", value: parseFloat(data.DeepLearning.disgustDL)},
-    {x: "fear", value: parseFloat(data.DeepLearning.fearDL)},
-    {x: "sad", value: parseFloat(data.DeepLearning.sadDL)},
-    {x: "angry", value: parseFloat(data.DeepLearning.angryDL)}
+    {x: "neutral", value: parseFloat(data.DeepLearning.neutral)},
+    {x: "happy", value: parseFloat(data.DeepLearning.happy)},
+    {x: "surprise", value: parseFloat(data.DeepLearning.surprise)},
+    {x: "disgust", value: parseFloat(data.DeepLearning.disgust)},
+    {x: "fear", value: parseFloat(data.DeepLearning.fear)},
+    {x: "sad", value: parseFloat(data.DeepLearning.sad)},
+    {x: "angry", value: parseFloat(data.DeepLearning.angry)}
   ];  
 }
 
@@ -94,39 +96,39 @@ if (data.hasOwnProperty("DeepLearning")){
 
 function printLogs(data){
   if (data.hasOwnProperty("DeepFace")){
-    document.getElementById('AngryDF').textContent = data.DeepFace.angryDF + '%';
-    document.getElementById('DisgustDF').textContent = data.DeepFace.disgustDF + '%';
-    document.getElementById('FearDF').textContent = data.DeepFace.fearDF + '%';
-    document.getElementById('HappyDF').textContent = data.DeepFace.happyDF + '%';
-    document.getElementById('NeutralDF').textContent = data.DeepFace.neutralDF + '%';
-    document.getElementById('SadDF').textContent = data.DeepFace.sadDF + '%';
-    document.getElementById('SurpriseDF').textContent = data.DeepFace.surpriseDF + '%';
+    document.getElementById('AngryDF').textContent = data.DeepFace.angry + '%';
+    document.getElementById('DisgustDF').textContent = data.DeepFace.disgust + '%';
+    document.getElementById('FearDF').textContent = data.DeepFace.fear + '%';
+    document.getElementById('HappyDF').textContent = data.DeepFace.happy + '%';
+    document.getElementById('NeutralDF').textContent = data.DeepFace.neutral + '%';
+    document.getElementById('SadDF').textContent = data.DeepFace.sad + '%';
+    document.getElementById('SurpriseDF').textContent = data.DeepFace.surprise + '%';
 
     document.getElementById('secondModel').style.borderColor = "#E55934";
     document.getElementById('secondModelTop').style.background = "#E55934";
   }
 
   if (data.hasOwnProperty("TransferLearning")){
-    document.getElementById('AngryTL').textContent = data.TransferLearning.angryTL + '%';
-    document.getElementById('DisgustTL').textContent = data.TransferLearning.disgustTL + '%';
-    document.getElementById('FearTL').textContent = data.TransferLearning.fearTL + '%';
-    document.getElementById('HappyTL').textContent = data.TransferLearning.happyTL + '%';
-    document.getElementById('NeutralTL').textContent = data.TransferLearning.neutralTL + '%';
+    document.getElementById('AngryTL').textContent = data.TransferLearning.angry + '%';
+    document.getElementById('DisgustTL').textContent = data.TransferLearning.disgust + '%';
+    document.getElementById('FearTL').textContent = data.TransferLearning.fear + '%';
+    document.getElementById('HappyTL').textContent = data.TransferLearning.happy + '%';
+    document.getElementById('NeutralTL').textContent = data.TransferLearning.neutral + '%';
     document.getElementById('SadTL').textContent = data.TransferLearning.sadTL + '%';
-    document.getElementById('SurpriseTL').textContent = data.TransferLearning.surpriseTL + '%';
+    document.getElementById('SurpriseTL').textContent = data.TransferLearning.surprise + '%';
 
     document.getElementById('firstModel').style.borderColor = "#9BC53D";
     document.getElementById('firstModelTop').style.background = "#9BC53D";
   }
 
   if (data.hasOwnProperty("DeepLearning")){
-    document.getElementById('AngryDL').textContent = data.DeepLearning.angryDL + '%';
-    document.getElementById('DisgustDL').textContent = data.DeepLearning.disgustDL + '%';
-    document.getElementById('FearDL').textContent = data.DeepLearning.fearDL + '%';
-    document.getElementById('HappyDL').textContent = data.DeepLearning.happyDL + '%';
-    document.getElementById('NeutralDL').textContent = data.DeepLearning.neutralDL + '%';
-    document.getElementById('SadDL').textContent = data.DeepLearning.sadDL + '%';
-    document.getElementById('SurpriseDL').textContent = data.DeepLearning.surpriseDL + '%';
+    document.getElementById('AngryDL').textContent = data.DeepLearning.angry + '%';
+    document.getElementById('DisgustDL').textContent = data.DeepLearning.disgust + '%';
+    document.getElementById('FearDL').textContent = data.DeepLearning.fear + '%';
+    document.getElementById('HappyDL').textContent = data.DeepLearning.happy + '%';
+    document.getElementById('NeutralDL').textContent = data.DeepLearning.neutral + '%';
+    document.getElementById('SadDL').textContent = data.DeepLearning.sad + '%';
+    document.getElementById('SurpriseDL').textContent = data.DeepLearning.surprise + '%';
 
     document.getElementById('thirdModel').style.borderColor = "#5BC0EB";
     document.getElementById('thirdModelTop').style.background = "#5BC0EB";

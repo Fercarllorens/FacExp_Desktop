@@ -18,6 +18,8 @@ from PIL import Image
 import win32gui
 from collections import Counter
 import os
+from PyInstaller.utils.hooks import collect_submodules
+
 
 
 # IMPORT OF HAARCASCADE FOR FACE DETECTION
@@ -638,11 +640,11 @@ def get_emotions():
         actualTL = windowTL
         actualDL = windowDL
 
-    FinalJSON = {
-        "DeepFace": averageEmotion(actualDF),
-        "TransferLearning": averageEmotion(actualTL),
-        "DeepLearning": averageEmotion(actualDL)
-    }        
+        FinalJSON = {
+            "DeepFace": averageEmotion(actualDF),
+            "TransferLearning": averageEmotion(actualTL),
+            "DeepLearning": averageEmotion(actualDL)
+        }        
 
     if threadingActive:
         return FinalJSON
