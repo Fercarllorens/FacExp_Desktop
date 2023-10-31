@@ -6,3 +6,8 @@ This tool can be used as an API or as a desktop application, sharing these two o
 
 # Analysis
 The analysis is made by the DeepFace library from Python, and two Machine Learning models, one implemented in Transfer Learning and other implemented in Deep Learning, this one using ACNN (Attentional Convolutional Neural Networks).
+
+# User manual
+Spanish: [MANUAL DE USUARIO FACEXP.pdf](https://github.com/Fercarllorens/FacExp_Desktop/files/13215541/MANUAL.DE.USUARIO.FACEXP.pdf)
+English: [FACEXP USER MANUAL.pdf](https://github.com/Fercarllorens/FacExp_Desktop/files/13215539/FACEXP.USER.MANUAL.pdf)
+
