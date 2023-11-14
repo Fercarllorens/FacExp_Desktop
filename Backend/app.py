@@ -26,7 +26,10 @@ from PyInstaller.utils.hooks import collect_submodules
 face_cascade = cv2.CascadeClassifier('Backend//haarcascade//haarcascade_frontalface_default.xml')
 
 #IMPORT MODELS
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = "cpu"
+if torch.cuda.is_available():
+    device = "cuda:0"
+torch.device(device)
 net = Deep_Emotion()
 net.load_state_dict(torch.load('Backend//Models//deep_emotion-100-128-0.005.pt'))
 net.to(device)
