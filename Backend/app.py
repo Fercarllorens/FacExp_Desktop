@@ -110,9 +110,27 @@ def start_webcam_record():
     fps = 20.0  # Controls the fps of the video created: todo look up optimal fps for webcam
     out = cv2.VideoWriter()
     if status_memory['Video Folder'] == 'Default':
-        success = out.open('Backend//Video//output.mp4',fourcc, fps, (1920,1080),True)
+        path = 'Backend//Video//output'
+        count = 1
+        while os.path.isfile(path=path + '.mp4'):
+            if path == 'Backend//Video//output':
+                path = path + str(count)
+            else:
+                path = path[:-1] +str(count)
+            count = count + 1
+        path = path + '.mp4'
+        success = out.open(path,fourcc, fps, (1920,1080),True)
     else: 
-        success = out.open(status_memory['Video Folder'],fourcc, fps, (1920,1080),True)
+        path = status_memory['Video Folder'][:-4]
+        count = 1
+        while os.path.isfile(path=path + '.mp4'):
+            if path == status_memory['Video Folder'][:-4]:
+                path = path + str(count)
+            else:
+                path = path[:-1] +str(count)
+            count = count + 1
+        path = path + '.mp4'
+        success = out.open(path,fourcc, fps, (1920,1080),True)
 
     while threadingActive:
         ret, frame = stream.read()
@@ -131,9 +149,27 @@ def start_screen_record():
     fps = 20.0  # Controls the fps of the video created: todo look up optimal fps for webcam
     out = cv2.VideoWriter()
     if status_memory['Screen Folder'] == 'Default':
-        success = out.open('Backend//Screen//output.mp4',fourcc, fps, (1920,1080),True)
+        path = 'Backend//Screen//output'
+        count = 1
+        while os.path.isfile(path=path + '.mp4'):
+            if path == 'Backend//Screen//output':
+                path = path + str(count)
+            else:
+                path = path[:-1] +str(count)
+            count = count + 1
+        path = path + '.mp4'
+        success = out.open(path,fourcc, fps, (1920,1080),True)
     else:
-        success = out.open(status_memory['Screen Folder'], fourcc, fps, (1920,1080),True)
+        path = status_memory['Screen Folder'][:-4]
+        count = 1
+        while os.path.isfile(path=path + '.mp4'):
+            if path == status_memory['Screen Folder'][:-4]:
+                path = path + str(count)
+            else:
+                path = path[:-1] +str(count)
+            count = count + 1
+        path = path + '.mp4'
+        success = out.open(path, fourcc, fps, (1920,1080),True)
 
     while threadingActive:
 
@@ -344,11 +380,29 @@ def start_log() :
     global task
 
     if status_memory['Logs Folder'] == 'Default (folder: CSV)':
-        f = open('Backend//CSV//timestamptest.csv','w',newline='')
+        path = 'Backend//CSV//timestamptest'
+        count = 1
+        while os.path.isfile(path=path + '.csv'):
+            if path == 'Backend//CSV//timestamptest':
+                path = path + str(count)
+            else:
+                path = path[:-1] +str(count)
+            count = count + 1
+        path = path + '.csv'
+        f = open(path,'w',newline='')
         writer = csv.writer(f)
         writer.writerow(headersCSV)
     else:
-        f = open(status_memory['Logs Folder'],'w',newline='')
+        path = status_memory['Logs Folder'][:-4]
+        count = 1
+        while os.path.isfile(path=path + '.csv'):
+            if path == status_memory['Logs Folder'][:-4]:
+                path = path + str(count)
+            else:
+                path = path[:-1] +str(count)
+            count = count + 1
+        path = path + '.csv'
+        f = open(path,'w',newline='')
         writer = csv.writer(f)
         writer.writerow(headersCSV)
 
