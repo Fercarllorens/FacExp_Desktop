@@ -18,7 +18,7 @@ from PIL import Image
 import win32gui
 from collections import Counter
 import os
-from PyInstaller.utils.hooks import collect_submodules
+
 
 
 
@@ -27,11 +27,12 @@ face_cascade = cv2.CascadeClassifier('Backend//haarcascade//haarcascade_frontalf
 
 #IMPORT MODELS
 device = "cpu"
+print(torch.cuda.is_available())
 if torch.cuda.is_available():
     device = "cuda:0"
 torch.device(device)
 net = Deep_Emotion()
-net.load_state_dict(torch.load('Backend//Models//deep_emotion-100-128-0.005.pt'))
+net.load_state_dict(torch.load('Backend//Models//deep_emotion-100-128-0.005.pt', map_location=torch.device(device)))
 net.to(device)
 
 model = tf.keras.models.load_model('Backend//Models//Final_model_02')
