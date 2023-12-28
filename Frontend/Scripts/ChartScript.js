@@ -1,4 +1,6 @@
 var tokenRecord;
+var timeRecord;
+var time = 0;
 
 function start() {
   document.getElementById('stream').src="../../Backend/Image/StreamRead.png"  + "?" + Date.now()
@@ -182,6 +184,11 @@ function startRecord (){
   // document.getElementById('start').disable = true;
   // document.getElementById('stop').disable = false;
   tokenRecord = setInterval(start, 300)
+  timeRecord = setInterval(() => {
+    time = time +1;
+    HHMMSStime = new Date(time * 1000).toISOString().slice(11, 19);
+    document.getElementById("time").textContent = HHMMSStime
+  }, 1000)
 }
 
 function stopRecord (){
@@ -193,6 +200,8 @@ function stopRecord (){
     });
 
   clearInterval(tokenRecord)
+  clearInterval(timeRecord)
+  document.getElementById("time").textContent = "00:00:00"
   // document.getElementById('start').disable = false;
   // document.getElementById('stop').disable = true;
 }

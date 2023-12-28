@@ -1,3 +1,6 @@
+var timeTaskRecord;
+var timeTask = 0;
+
 function changePageConfig(){
     stopRecord();
     var oldBody = document.getElementById("bodyMain");
@@ -174,6 +177,12 @@ function startTask(){
     .then(resp => resp.json())
     .then((data) => console.log(data))
     .catch(error => console.log(error));  
+
+    timeTaskRecord = setInterval(() => {
+        timeTask = timeTask +1;
+        HHMMSStimeTask = new Date(timeTask * 1000).toISOString().slice(11, 19);
+        document.getElementById("taskTime").textContent = HHMMSStimeTask
+    }, 1000)
 }
 
 function stopTask(){
@@ -186,6 +195,9 @@ function stopTask(){
     .then(resp => resp.json())
     .then((data) => console.log(data))
     .catch(error => console.log(error));  
+
+    clearInterval(timeTaskRecord)
+    document.getElementById("taskTime").textContent = "00:00:00"
 }
 
 function getStatus(){

@@ -18,6 +18,7 @@ from PIL import Image
 import win32gui
 from collections import Counter
 import os
+import easygui as msgManager
 
 
 
@@ -26,16 +27,21 @@ import os
 face_cascade = cv2.CascadeClassifier('Backend//haarcascade//haarcascade_frontalface_default.xml')
 
 #IMPORT MODELS
-device = "cpu"
-print(torch.cuda.is_available())
-if torch.cuda.is_available():
-    device = "cuda:0"
-torch.device(device)
-net = Deep_Emotion()
-net.load_state_dict(torch.load('Backend//Models//deep_emotion-100-128-0.005.pt', map_location=torch.device(device)))
-net.to(device)
+try: 
+    device = "cpu"
+    if torch.cuda.is_available():
+        device = "cuda:0"
+    torch.device(device)
+    net = Deep_Emotion()
+    net.load_state_dict(torch.load('Backend//Models//deep_emotion-100-128-0.005.pt', map_location=torch.device(device)))
+    net.to(device)
+except:
+    msgManager.msgbox("An error ocurred when ML models where loading. Are you sure your computer have GPU?\n Ha surgido un error durante la carga de los modelos de ML. ¿Seguro que tu ordenador tiene GPU?", "Error")
 
-model = tf.keras.models.load_model('Backend//Models//Final_model_02')
+try:
+    model = tf.keras.models.load_model('Backend//Models//Final_model_02')
+except:
+    msgManager.msgbox("Error loading ML models in TensorFlow \n Error cargando los modelos ML en TensorFlow", "Error")
 
 # STATUS MEMORY
 f = open("Backend//Status//config.json")
@@ -56,8 +62,10 @@ emotion_confidenceTL = [0, 0, 0, 0, 0, 0, 0]
 emotion_confidenceDL = [0, 0, 0, 0, 0, 0, 0]
 
 #Variable camera
-stream = cv2.VideoCapture(status_memory['Webcam'])
-
+try:
+    stream = cv2.VideoCapture(status_memory['Webcam'])
+except:
+    msgManager.msgbox("The webcam selected is not connected. Please, select other webcam. \n La webcam seleccionada no esta conectada. Porfavor, elige otra webcam","Error")
 #global variables analysis
 txtEmotionDF = ""
 txtEmotionTL = ""
@@ -742,7 +750,6 @@ def averageEmotion(list):
             }
 
 
-
 @app.route('/start', methods= ['GET'])
 def startDF():
     global threadingActive
@@ -969,4 +976,7 @@ def endTask():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    print("API READY TO USE // API LISTA PARA SU USO")
+    app.run(debug=True, use_reloader=False)
+    
+

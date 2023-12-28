@@ -123,9 +123,25 @@ html, body, #bodyMain, #bodyCfg{
 
 #btn-container{
     position: absolute;
-    top:350px;
+    top:400px;
     width: 100%;
     height: 100px;
+}
+
+#timer{
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 550px;
+    font-size: 16px;
+}
+
+#taskTimer{
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 570px;
+    font-size: 16px;
 }
 
 #task, #notask{
@@ -134,7 +150,7 @@ html, body, #bodyMain, #bodyCfg{
 
 #btn-container-task{
     position: absolute;
-    top:450px;
+    top:650px;
     width: 100%;
     height: 100px;
 }
