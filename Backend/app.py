@@ -22,10 +22,10 @@ from PyInstaller.utils.hooks import collect_submodules
 
 
 
-# IMPORT OF HAARCASCADE FOR FACE DETECTION
+# IMPORT OF CV2 HAARCASCADE FOR FACE DETECTION
 face_cascade = cv2.CascadeClassifier('Backend//haarcascade//haarcascade_frontalface_default.xml')
 
-#IMPORT MODELS
+# LOAD PYTORCH MODEL
 device = "cpu"
 if torch.cuda.is_available():
     device = "cuda:0"
@@ -34,14 +34,15 @@ net = Deep_Emotion()
 net.load_state_dict(torch.load('Backend//Models//deep_emotion-100-128-0.005.pt'))
 net.to(device)
 
+# LOAD TENSORFLOW MODEL
 model = tf.keras.models.load_model('Backend//Models//Final_model_02')
 
-# STATUS MEMORY
+# LOAD STATUS MEMORY
 f = open("Backend//Status//config.json")
 status_memory = json.load(f)
 f.close()
 
-# Logs stuff
+# INITIALIZE ALL LOGS VARIABLES TO BE PRINTED
 timeInit = 0
 timeIteration=0
 id=0
@@ -54,28 +55,29 @@ emotion_confidenceDF = [0, 0, 0, 0, 0, 0, 0]
 emotion_confidenceTL = [0, 0, 0, 0, 0, 0, 0]
 emotion_confidenceDL = [0, 0, 0, 0, 0, 0, 0]
 
-#Variable camera
+# VARIABLE FOR REAL TIME WEBCAM IMAGE
 stream = cv2.VideoCapture(status_memory['Webcam'])
 
-#global variables analysis
+# TEXTUAL ANALYSIS VARIABLES FOR EACH MODEL (USED FOR PRINT RESULTS)
 txtEmotionDF = ""
 txtEmotionTL = ""
 txtEmotionDL = ""
 
-#Threshold analysis
+# THRESHOLD ANALYSIS ARRAY VARIABLES (WINDOW OF DATA FOR EACH MODEL) 
 windowDF = []
 windowTL = []
 windowDL = []
 
-#Stream values
+# INITIALIZE VARIABLES FOR FACE RECOGNITION
 ret = None
 frame = None
 face_roi = None
 
-#Task flag
+# FLAGS FOR TASKS
 task = 0;
 lasttask = 0;
 
+# THIS FUNCTION STARTS THE REAL TIME WEBCAM VIDEO
 def start_stream():
     global stream
     global status_memory
@@ -84,13 +86,18 @@ def start_stream():
     global face_roi
 
     while threadingActive:
+        ## Takes the current image
         ret, frame = stream.read()
         if ret == True:
+            ## Changes image to grey scale
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
+            ## Detect faces in current image
             faces = face_cascade.detectMultiScale(gray,1.1,4)
 
+            ## Looping faces
             for (x,y,w,h) in faces:
+                ## Mark and extract faces in current image
                 roi_gray = gray[y:y+h, x:x+w]
                 roi_color = frame[y:y+h, x:x+w]
                 cv2.rectangle(frame, (x,y), (x+w, y+h), (255,0,0), 3)
@@ -100,54 +107,75 @@ def start_stream():
                 else:
                     for (ex, ey, ew, eh) in multiface:
                         face_roi = roi_color[ey:ey+eh, ex:ex+ew] 
+        ## Save current frame in extra folder for frontend
         cv2.imwrite("Backend//Image//StreamRead.png", frame)
-    
+
+# THIS FUNCTION STARTS THE WEBCAM RECORDING
 def start_webcam_record():
     global stream
     global status_memory
 
+    ## Define video settings 
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     fps = 20.0  # Controls the fps of the video created: todo look up optimal fps for webcam
     out = cv2.VideoWriter()
+    ## When default folder
     if status_memory['Video Folder'] == 'Default':
         path = 'Backend//Video//output'
         count = 1
+        ## Checks if paths exists
         while os.path.isfile(path=path + '.mp4'):
             if path == 'Backend//Video//output':
+                ## Add number 1
                 path = path + str(count)
             else:
+                ## Add next number
                 path = path[:-1] +str(count)
             count = count + 1
         path = path + '.mp4'
+        ## Create video
         success = out.open(path,fourcc, fps, (1920,1080),True)
+    ## When other folder
     else: 
         path = status_memory['Video Folder'][:-4]
         count = 1
+        ## Checks if paths exists
         while os.path.isfile(path=path + '.mp4'):
             if path == status_memory['Video Folder'][:-4]:
+                ## Add number 1
                 path = path + str(count)
             else:
+                ## Add next number
                 path = path[:-1] +str(count)
             count = count + 1
         path = path + '.mp4'
+        ## Create video
         success = out.open(path,fourcc, fps, (1920,1080),True)
 
     while threadingActive:
+        ## Take current image
         ret, frame = stream.read()
         if ret == True:
+            ## Resize and save on video
             record = cv2.resize(frame, (1920,1080))
             out.write(record)
     out.release()
 
+# THIS FUNCTION STARTS THE WEBCAM RECORDING (THIS ACTUALLY WORKS AS FUNCTION ABOVE)
 def start_screen_record():
+    ## Cursor graph points
     Xs = [0,8,6,14,12,4,2,0]
     Ys = [0,2,4,12,14,6,8,0] 
 
+    ## Initialize video recorder
     sct = mss()
 
+    ## Video settings
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     fps = 20.0  # Controls the fps of the video created: todo look up optimal fps for webcam
     out = cv2.VideoWriter()
+
+    ## Same as webcam
     if status_memory['Screen Folder'] == 'Default':
         path = 'Backend//Screen//output'
         count = 1
@@ -173,32 +201,35 @@ def start_screen_record():
 
     while threadingActive:
 
+        ## Define cursor position 
         mouseX,mouseY = win32gui.GetCursorPos()
         if mouseX < 0:
             mouseX += 1920
         mouseX *= 1
         mouseY *= 1
 
-        print(mouseX)
-        
-
+        ## Select the screen
         sct_img = sct.grab(sct.monitors[status_memory['Screencam']])
 
+        ## Take screen image
         frame = np.array(sct_img)
         
-
+        ## Create cursor in image
         Xthis = [2*x+mouseX -10 for x in Xs]
         Ythis = [2*y+mouseY -40 for y in Ys]
         points = list(zip(Xthis,Ythis))
         points = np.array(points, 'int32')
+        ## Add cursor to image
         cv2.fillPoly(frame,[points],color=[255,255,255])
+
+        ## Save image
         image = cv2.resize(frame, (1920,1080))
         image = image[:,:,:3]
         out.write(image)
     out.release()
 
         
-
+# THIS FUNCTION STARTS THE ANALYSIS IN DEEPFACE
 def start_analysis_deepFace():
     global txtEmotionDF
     global stream
@@ -207,15 +238,18 @@ def start_analysis_deepFace():
     global frame
     while threadingActive and status_memory['DeepFace']:
         if ret == True:
+            ## Analyze image 
             result = DeepFace.analyze(
                     img_path=frame, 
                     actions=['emotion'], 
                     enforce_detection=False,
                     silent=True)[0]
             
+            ## Saves dominant emotion in global variables
             emotionDF = result['dominant_emotion']
             txtEmotionDF = str(emotionDF)
 
+            ## Split result in variables for each emotion 
             angryDF = float(result['emotion']['angry'])
             disgustDF = float(result['emotion']['disgust'])
             fearDF = float(result['emotion']['fear'])
@@ -225,16 +259,22 @@ def start_analysis_deepFace():
             neutralDF = float(result['emotion']['neutral']) 
 
             global emotion_confidenceDF
+            ## Put results in ordered array
             emotion_confidenceDF = [neutralDF, happyDF, surpriseDF, disgustDF, fearDF, sadDF, angryDF]
             
             global windowDF
+            ## Analysis in threshold mode
             if status_memory['Threshold mode']:
+                ## Take actual time
                 timeNow = time.time()
+                ## Add instant to the data window
                 instantAnalysis = {"time":timeNow, "analysis":emotion_confidenceDF}
                 windowDF.append(instantAnalysis)
                 
+                ## Take min time
                 timeThreshold = timeNow - (status_memory["Threshold"]/2)/1000
 
+                ## Delete data older than min time
                 for element in windowDF:
                     if element["time"] < timeThreshold:
                         windowDF.remove(element)
@@ -243,7 +283,7 @@ def start_analysis_deepFace():
 
                 
 
-
+# THIS FUNCTION STARTS THE ANALYSIS IN TRANSFER LEARNING MODEL
 def start_analysis_transfer():
     global txtEmotionTL
 
@@ -260,16 +300,20 @@ def start_analysis_transfer():
     while threadingActive and status_memory['Transfer Learning']:
         if ret == True: 
 
+            ## If exist face
             if face_roi is not None:
+                ## Change dimensions to model input dimensions and normalize
                 predictImageTL = cv2.resize(face_roi,(224,224))
                 predictImageTL = np.expand_dims(predictImageTL,axis=0) 
                 predictImageTL = predictImageTL/255.0 
 
+                ## Take predictions
                 PredictionsTL = model.predict(predictImageTL)
             else:
                 PredictionsTL = None
 
             if PredictionsTL is not None:
+                ## Split predictions in variables for each emotion
                 angryTL = float(PredictionsTL[0][0])
                 disgustTL = float(PredictionsTL[0][1])
                 fearTL = float(PredictionsTL[0][2])
@@ -278,14 +322,17 @@ def start_analysis_transfer():
                 sadTL = float(PredictionsTL[0][5])
                 surpriseTL = float(PredictionsTL[0][6])
             
+                ## Put results in ordered array
                 emotion_confidenceTL = [neutralTL*100, happyTL*100, surpriseTL*100, disgustTL*100, fearTL*100, sadTL*100, angryTL*100]
 
             if PredictionsTL is not None:
+                ## Save dominant emotion in global variable
                 txtEmotionTL = emotion_names[np.argmax(emotion_confidenceTL)]
             else:
                 txtEmotionTL = ""
             
             global windowTL
+            ## Threslhold mode treatment (same as above)
             if status_memory['Threshold mode']:
                 timeNow = time.time()
                 instantAnalysis = {"time":timeNow, "analysis":emotion_confidenceTL}
@@ -299,6 +346,7 @@ def start_analysis_transfer():
                     else:
                         break
 
+# THIS FUNCTION STARTS THE ANALYSIS IN DEEP LEARNING MODEL
 def start_analysis_deepLearning():
     global txtEmotionDL
 
@@ -312,26 +360,31 @@ def start_analysis_deepLearning():
     global frame
     global face_roi
     
+
     while threadingActive and status_memory['Deep Learning']:
         if ret == True:
 
             if face_roi is not None:
+                ## Change dimensions to model input dimensions and normalize
                 graytemp = cv2.cvtColor(face_roi, cv2.COLOR_BGR2GRAY)
                 predictImageDL = cv2.resize(graytemp,(48,48))
                 predictImageDL = np.expand_dims(predictImageDL,axis=0)
                 predictImageDL = np.expand_dims(predictImageDL,axis=0)
                 predictImageDL = predictImageDL/255.0
 
+                ## Processing image
                 data = torch.from_numpy(predictImageDL)
                 data = data.type(torch.FloatTensor)
                 data = data.to(device)
                 output = net(data)
-
+                
+                ## Take predictions 
                 PredictionsDL = F.softmax(output, dim=1)
             else:
                 PredictionsDL = None
 
             if PredictionsDL is not None:
+                ## Split predictions in variables for each emotion
                 angryDL = float(PredictionsDL[0][0])
                 disgustDL = float(PredictionsDL[0][1])
                 fearDL = float(PredictionsDL[0][2])
@@ -340,13 +393,17 @@ def start_analysis_deepLearning():
                 surpriseDL = float(PredictionsDL[0][5])
                 neutralDL = float(PredictionsDL[0][6])
             
+                ## Put emotions in ordered array
                 emotion_confidenceDL = [neutralDL*100, happyDL*100, surpriseDL*100, disgustDL*100, fearDL*100, sadDL*100, angryDL*100]
             
             if PredictionsDL is not None:
+                ## Save dominant emotion in global variable
                 txtEmotionDL = emotion_names[np.argmax(emotion_confidenceDL)]
             else:
                 txtEmotionDL = ""
 
+
+            ## Threshold mode treatment (same as above)
             global windowDL
             if status_memory['Threshold mode']:
                 timeNow = time.time()
@@ -360,7 +417,7 @@ def start_analysis_deepLearning():
                         windowDL.remove(element)
                     else:
                         break
-
+# THIS FUNCTION STARTS THE LOGS RECORDING
 def start_log() :
     global txtEmotionDF
     global txtEmotionTL
@@ -379,6 +436,7 @@ def start_log() :
     global status_memory
     global task
 
+    ## File duplication treatment (same as in video records)
     if status_memory['Logs Folder'] == 'Default (folder: CSV)':
         path = 'Backend//CSV//timestamptest'
         count = 1
@@ -406,13 +464,16 @@ def start_log() :
         writer = csv.writer(f)
         writer.writerow(headersCSV)
 
+
     timeInit = time.time()
+    ## Waits until models are working
     time.sleep(3)
     while threadingActive and status_memory['Logs']:
         timeIteration = time.time()
         timeSeconds = timeIteration - timeInit
         timeHHMMSS = timedelta(seconds=int(timeSeconds))
 
+        ## Organize data
         if status_memory['DeepFace']:
             neutralDF = emotion_confidenceDF[0]
             happyDF = emotion_confidenceDF[1]
@@ -464,6 +525,7 @@ def start_log() :
             sadDL = 0
             angryDL = 0
 
+        ## Write logs
         writer.writerow([
             id,
             timeHHMMSS,
@@ -506,6 +568,7 @@ def start_log() :
     
     lines = f.readlines()
 
+    ## Initialize task
     actualTask = 0
     lastLineTask = 0
     arrayTaskEmotionsDF = []
@@ -514,6 +577,7 @@ def start_log() :
 
     lines = lines[1:]
 
+    ## Change tasks if start in 1
     if lines[1].split(',')[2] == 1:
         actualTask = 1
         lastLineTask = 1
@@ -522,16 +586,23 @@ def start_log() :
         rowArray = line.split(',')
         if rowArray[2] != 0:
             actualTask = int(rowArray[2])
+            ## tsk 0 -> tsk n 
             if actualTask != lastLineTask and lastLineTask == 0:
+                ## Sets the new task
                 lastLineTask = actualTask
+                ## Saves emotions
                 arrayTaskEmotionsDF.append(rowArray[3])
                 arrayTaskEmotionsTL.append(rowArray[4])
                 arrayTaskEmotionsDL.append(rowArray[5])
+            ## tsk n -> tsk n
             elif actualTask == lastLineTask:
+                ## Save emotions
                 arrayTaskEmotionsDF.append(rowArray[3])
                 arrayTaskEmotionsTL.append(rowArray[4])
                 arrayTaskEmotionsDL.append(rowArray[5])
+            ## tsk n -> tsk 0 || tsk n -> tsk n+1
             elif actualTask != lastLineTask and lastLineTask != 0:
+                ## Write task emotions summary for each model
                 fout.write('TASK ' + str(lastLineTask) + ' SUMARY :\n')
                 fout.write('\n')
                 if status_memory['DeepFace']:
@@ -576,6 +647,7 @@ def start_log() :
                     fout.write('Surprise times: ' + str(dic['surprise']) + '\n')
                     fout.write('\n')
                 
+                ## Restart the arrays
                 arrayTaskEmotionsDF = []
                 arrayTaskEmotionsTL = []
                 arrayTaskEmotionsDL = []
@@ -586,11 +658,12 @@ def start_log() :
 
 
 
-#Thread analysis
+# SET THREADS TO FALSE
 threadingActive = False
 
 app = Flask(__name__)
 
+# FUNCTION TO SEND RESULTS
 @app.route('/result', methods= ['GET'])
 def get_emotions():
 
@@ -606,7 +679,9 @@ def get_emotions():
 
     FinalJSONTxt = "{"
 
+    ## For normal analysis
     if not status_memory["Threshold mode"]:
+        ## Take DeepFace emotion s and transform to JSON
         if status_memory['DeepFace']:
             neutralDF = emotion_confidenceDF[0]
             happyDF = emotion_confidenceDF[1]
@@ -634,6 +709,7 @@ def get_emotions():
             if status_memory['Transfer Learning'] or status_memory ['Deep Learning']:
                 FinalJSONTxt = FinalJSONTxt + ',\n'
 
+        ## Take Transfer Learning emotions and transform to JSON
         if status_memory['Transfer Learning']:
             neutralTL = emotion_confidenceTL[0]
             happyTL = emotion_confidenceTL[1]
@@ -662,6 +738,7 @@ def get_emotions():
             if status_memory ['Deep Learning']:
                 FinalJSONTxt = FinalJSONTxt + ',\n'
 
+        ## Take Deep Learning emotions and transform to JSON
         if status_memory['Deep Learning']:
             neutralDL = emotion_confidenceDL[0]
             happyDL = emotion_confidenceDL[1]
@@ -686,10 +763,12 @@ def get_emotions():
 
             FinalJSONTxt = FinalJSONTxt + DLJSONTxt
 
+        ## Send results in JSON format
         FinalJSONTxt = FinalJSONTxt + '}'
         print(FinalJSONTxt)
         FinalJSON = json.loads(FinalJSONTxt)
     
+    #
     else:
         time.sleep((status_memory["Threshold"]/2)/1000)
        
