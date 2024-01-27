@@ -1,3 +1,7 @@
 node_modules
 Backend/Image
 CSV
+Backend/build/
+Backend/dist/
+Backend/app.spec
+Backend/startAPI.spec
