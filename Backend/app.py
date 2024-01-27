@@ -19,6 +19,7 @@ import win32gui
 from collections import Counter
 import os
 from PyInstaller.utils.hooks import collect_submodules
+import easygui as msgManager
 
 
 
@@ -26,16 +27,21 @@ from PyInstaller.utils.hooks import collect_submodules
 face_cascade = cv2.CascadeClassifier('Backend//haarcascade//haarcascade_frontalface_default.xml')
 
 # LOAD PYTORCH MODEL
-device = "cpu"
-if torch.cuda.is_available():
-    device = "cuda:0"
-torch.device(device)
-net = Deep_Emotion()
-net.load_state_dict(torch.load('Backend//Models//deep_emotion-100-128-0.005.pt'))
-net.to(device)
+try: 
+    device = "cpu"
+    if torch.cuda.is_available():
+        device = "cuda:0"
+    torch.device(device)
+    net = Deep_Emotion()
+    net.load_state_dict(torch.load('Backend//Models//deep_emotion-100-128-0.005.pt', map_location=torch.device(device)))
+    net.to(device)
+except:
+    msgManager.msgbox("An error ocurred when ML models where loading. Are you sure your computer have GPU?\n Ha surgido un error durante la carga de los modelos de ML. ¿Seguro que tu ordenador tiene GPU?", "Error")
 
-# LOAD TENSORFLOW MODEL
-model = tf.keras.models.load_model('Backend//Models//Final_model_02')
+try:
+    model = tf.keras.models.load_model('Backend//Models//Final_model_02')
+except:
+    msgManager.msgbox("Error loading ML models in TensorFlow \n Error cargando los modelos ML en TensorFlow", "Error")
 
 # LOAD STATUS MEMORY
 f = open("Backend//Status//config.json")
@@ -436,6 +442,8 @@ def start_log() :
     global status_memory
     global task
 
+    currentFileName = ""
+
     ## File duplication treatment (same as in video records)
     if status_memory['Logs Folder'] == 'Default (folder: CSV)':
         path = 'Backend//CSV//timestamptest'
@@ -448,6 +456,7 @@ def start_log() :
             count = count + 1
         path = path + '.csv'
         f = open(path,'w',newline='')
+        currentFileName = path
         writer = csv.writer(f)
         writer.writerow(headersCSV)
     else:
@@ -461,6 +470,7 @@ def start_log() :
             count = count + 1
         path = path + '.csv'
         f = open(path,'w',newline='')
+        currentFileName = path
         writer = csv.writer(f)
         writer.writerow(headersCSV)
 
@@ -558,19 +568,23 @@ def start_log() :
         id = id+1
         time.sleep(0.1)
     f.close()
-    if status_memory['Logs Folder'] == 'Default (folder: CSV)':
-        f = open('Backend//CSV//timestamptest.csv')
-        fout = open('Backend//CSV//timestamptest.txt','w',newline='')
-    else:
-        f = open(status_memory['Logs Folder'])
-        name = status_memory['Logs Folder'][:-4]
-        fout = open(name + '.txt','w',newline='')
+    # if status_memory['Logs Folder'] == 'Default (folder: CSV)':
+    #     f = open('Backend//CSV//timestamptest.csv')
+    #     fout = open('Backend//CSV//timestamptest.txt','w',newline='')
+    # else:
+    #     f = open(status_memory['Logs Folder'])
+    #     name = status_memory['Logs Folder'][:-4]
+    #     fout = open(name + '.txt','w',newline='')
+
+    f = open(currentFileName)
+    fout = open(currentFileName[:-4] + ".txt",'w',newline='')
     
     lines = f.readlines()
 
     ## Initialize task
     actualTask = 0
     lastLineTask = 0
+    timeInitTask = 0
     arrayTaskEmotionsDF = []
     arrayTaskEmotionsTL = []
     arrayTaskEmotionsDL = []
@@ -589,6 +603,7 @@ def start_log() :
             ## tsk 0 -> tsk n 
             if actualTask != lastLineTask and lastLineTask == 0:
                 ## Sets the new task
+                timeInitTask = rowArray[1]
                 lastLineTask = actualTask
                 ## Saves emotions
                 arrayTaskEmotionsDF.append(rowArray[3])
@@ -603,7 +618,9 @@ def start_log() :
             ## tsk n -> tsk 0 || tsk n -> tsk n+1
             elif actualTask != lastLineTask and lastLineTask != 0:
                 ## Write task emotions summary for each model
+                timeEndTask = rowArray[1]
                 fout.write('TASK ' + str(lastLineTask) + ' SUMARY :\n')
+                fout.write('Init time: ' + str(timeInitTask) + ' End time: ' + str(timeEndTask) + ' \n')
                 fout.write('\n')
                 if status_memory['DeepFace']:
                     dic = Counter(arrayTaskEmotionsDF)
@@ -655,6 +672,61 @@ def start_log() :
                 arrayTaskEmotionsDF.append(rowArray[3])
                 arrayTaskEmotionsTL.append(rowArray[4])
                 arrayTaskEmotionsDL.append(rowArray[5])
+    
+    arrayTaskEmotionsDF = []
+    arrayTaskEmotionsTL = []
+    arrayTaskEmotionsDL = []
+    for line in lines:
+        rowArray = line.split(',')
+        arrayTaskEmotionsDF.append(rowArray[3])
+        arrayTaskEmotionsTL.append(rowArray[4])
+        arrayTaskEmotionsDL.append(rowArray[5])
+        
+    fout.write('RECORD SUMARY :\n')
+    fout.write('\n')
+    if status_memory['DeepFace']:
+        dic = Counter(arrayTaskEmotionsDF)
+        dominant = max(dic, key=dic.get)
+        fout.write('Deepface sumary:\n')
+        fout.write('Dominant emotion in task: ' + dominant + '\n')
+        fout.write('Angry times: ' + str(dic['angry']) + '\n')
+        fout.write('Disgust times: ' + str(dic['disgust']) + '\n')
+        fout.write('Fear times: ' + str(dic['fear']) + '\n')
+        fout.write('Happy times: ' + str(dic['happy']) + '\n')
+        fout.write('Neutral times: ' + str(dic['neutral']) + '\n')
+        fout.write('Sad times: ' + str(dic['sad']) + '\n')
+        fout.write('Surprise times: ' + str(dic['surprise']) + '\n')
+        fout.write('\n')
+
+    if status_memory['Transfer Learning']:
+        dic = Counter(arrayTaskEmotionsTL)
+        dominant = max(dic, key=dic.get)
+        fout.write('Transfer Learning sumary:\n')
+        fout.write('Dominant emotion in task: ' + dominant + '\n')
+        fout.write('Angry times: ' + str(dic['angry']) + '\n')
+        fout.write('Disgust times: ' + str(dic['disgust']) + '\n')
+        fout.write('Fear times: ' + str(dic['fear']) + '\n')
+        fout.write('Happy times: ' + str(dic['happy']) + '\n')
+        fout.write('Neutral times: ' + str(dic['neutral']) + '\n')
+        fout.write('Sad times: ' + str(dic['sad']) + '\n')
+        fout.write('Surprise times: ' + str(dic['surprise']) + '\n')
+        fout.write('\n')
+
+    if status_memory['Deep Learning']:
+        dic = Counter(arrayTaskEmotionsDL)
+        dominant = max(dic, key=dic.get)
+        fout.write('Deep Learning sumary:\n')
+        fout.write('Dominant emotion in task: ' + dominant + '\n')
+        fout.write('Angry times: ' + str(dic['angry']) + '\n')
+        fout.write('Disgust times: ' + str(dic['disgust']) + '\n')
+        fout.write('Fear times: ' + str(dic['fear']) + '\n')
+        fout.write('Happy times: ' + str(dic['happy']) + '\n')
+        fout.write('Neutral times: ' + str(dic['neutral']) + '\n')
+        fout.write('Sad times: ' + str(dic['sad']) + '\n')
+        fout.write('Surprise times: ' + str(dic['surprise']) + '\n')
+        fout.write('\n')
+    
+        
 
 
 
@@ -1047,4 +1119,5 @@ def endTask():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    print("API READY TO USE")
+    app.run(debug=True, use_reloader=False)

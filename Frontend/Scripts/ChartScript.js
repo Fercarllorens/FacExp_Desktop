@@ -1,4 +1,7 @@
 var tokenRecord;
+var timeRecord;
+var time = 0;
+var recordStart = false;
 
 function start() {
   document.getElementById('stream').src="../../Backend/Image/StreamRead.png"  + "?" + Date.now()
@@ -17,7 +20,6 @@ async function plotChart (data) {
 
     document.getElementById('container').innerHTML = "";
     
-  console.log(data)
 
   if (data.hasOwnProperty("DeepFace")){
    var data1 = [
@@ -114,7 +116,7 @@ function printLogs(data){
     document.getElementById('FearTL').textContent = data.TransferLearning.fear + '%';
     document.getElementById('HappyTL').textContent = data.TransferLearning.happy + '%';
     document.getElementById('NeutralTL').textContent = data.TransferLearning.neutral + '%';
-    document.getElementById('SadTL').textContent = data.TransferLearning.sadTL + '%';
+    document.getElementById('SadTL').textContent = data.TransferLearning.sad + '%';
     document.getElementById('SurpriseTL').textContent = data.TransferLearning.surprise + '%';
 
     document.getElementById('firstModel').style.borderColor = "#9BC53D";
@@ -172,19 +174,33 @@ function plotVoidChart (){
 }
 
 function startRecord (){
-  fetch('http://localhost:5000/start', {
+  if (!recordStart){
+    fetch('http://localhost:5000/start', {
         method:'GET',
         headers:{
             'Content-Type':'application/json'
         }
     });
 
-  // document.getElementById('start').disable = true;
-  // document.getElementById('stop').disable = false;
-  tokenRecord = setInterval(start, 300)
+    // document.getElementById('start').disable = true;
+    // document.getElementById('stop').disable = false;
+    recordStart = true;
+    tokenRecord = setInterval(start, 300)
+    time = 0;
+    timeRecord = setInterval(() => {
+      time = time +1;
+      HHMMSStime = new Date(time * 1000).toISOString().slice(11, 19);
+      document.getElementById("time").textContent = HHMMSStime
+    }, 1000)
+  } else{
+    alert("recording is started!")
+  }
 }
 
 function stopRecord (){
+  if(taskStart){
+    stopTask();
+  }
   fetch('http://localhost:5000/stop', {
         method:'GET',
         headers:{
@@ -192,7 +208,11 @@ function stopRecord (){
         }
     });
 
+  recordStart = false;
   clearInterval(tokenRecord)
+  clearInterval(timeRecord)
+  time = 0
+  document.getElementById("time").textContent = "00:00:00"
   // document.getElementById('start').disable = false;
   // document.getElementById('stop').disable = true;
 }

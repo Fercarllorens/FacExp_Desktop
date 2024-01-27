@@ -1,3 +1,7 @@
+var timeTaskRecord;
+var timeTask = 0;
+taskStart = false;
+
 function changePageConfig(){
     stopRecord();
     var oldBody = document.getElementById("bodyMain");
@@ -13,6 +17,7 @@ function changePageConfig(){
         navigator.mediaDevices
         .enumerateDevices()
         .then((devices) => {
+          selectWebcam.innerHTML = ""
           devices.forEach((device) => {
             if(device.kind == 'videoinput'){
                 selectWebcam.innerHTML += `<option id='webcam${count}' value='${count}'>${device.label}</option>`
@@ -165,15 +170,30 @@ function submitThreshold(){
 }
 
 function startTask(){
-    fetch('http://localhost:5000/task', {
+    if (recordStart && !taskStart){
+        fetch('http://localhost:5000/task', {
         method:'GET',
         headers:{
             'Content-Type':'application/json'
         }
-    })
-    .then(resp => resp.json())
-    .then((data) => console.log(data))
-    .catch(error => console.log(error));  
+        })
+        .then(resp => resp.json())
+        .then((data) => console.log(data))
+        .catch(error => console.log(error));  
+
+        taskStart = true;
+        timeTask = 0;
+        timeTaskRecord = setInterval(() => {
+            timeTask = timeTask +1;
+            HHMMSStimeTask = new Date(timeTask * 1000).toISOString().slice(11, 19);
+            document.getElementById("taskTime").textContent = HHMMSStimeTask
+        }, 1000)
+    }
+    else if (!recordStart && !taskStart){
+        alert("You can't start a task when the record is stopped!")
+    }else if (taskStart){
+        alert("You need to stop the previous task to start a new one!")
+    }
 }
 
 function stopTask(){
@@ -186,6 +206,11 @@ function stopTask(){
     .then(resp => resp.json())
     .then((data) => console.log(data))
     .catch(error => console.log(error));  
+
+    taskStart = false;
+    clearInterval(timeTaskRecord)
+    timeTask = 0
+    document.getElementById("taskTime").textContent = "00:00:00"
 }
 
 function getStatus(){
